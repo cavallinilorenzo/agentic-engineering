@@ -44,47 +44,42 @@ Non sai cosa fare adesso? Digita **`/ask`**: guarda lo stato della repo e ti dic
 
 ## Installazione
 
-### 1. Clona la repo
+### 1. Installa
 
 ```bash
-git clone https://github.com/cavallinilorenzo/agentic-engineering.git ~/Developer/skills
-cd ~/Developer/skills
+npx agentic-engineering@latest
 ```
 
-### 2. Controlla cosa cambierebbe
+Copia le skill in `~/.claude/skills/` e gli agenti in `~/.claude/agents/`. Non serve clonare la repo. Per vedere prima cosa cambierebbe, senza toccare nulla:
 
 ```bash
-./scripts/install.sh
+npx agentic-engineering@latest --dry-run
 ```
 
-Senza opzioni non tocca nulla: mostra solo cosa farebbe.
+Se un nome è già occupato, il vecchio elemento viene spostato in `~/.claude/backups/agentic-engineering-<data>/`. Le skill restano `/spec`, `/plan`, ecc., senza prefisso di plugin.
 
-### 3. Crea i symlink
+Prima della pubblicazione su npm, o per provare un branch, si può usare direttamente GitHub:
 
 ```bash
-./scripts/install.sh --apply
+npx github:cavallinilorenzo/agentic-engineering
 ```
 
-Ogni skill diventa un link `~/.claude/skills/<nome>` verso questa repo, e ogni agente un link in `~/.claude/agents/`. Modificando la repo, o con un `git pull`, le skill si aggiornano subito. Se un nome è già occupato, il vecchio elemento viene spostato in `~/.claude/backups/agentic-engineering-<data>/`.
-
-Ho scelto i symlink e non un plugin perché i plugin usano nomi come `/agentic-engineering:spec`. Così `/spec` resta `/spec`.
-
-### 4. Togli le skill sostituite (facoltativo)
+### 2. Togli le skill sostituite (facoltativo)
 
 ```bash
-./scripts/install.sh --apply --retire
+npx agentic-engineering@latest --retire
 ```
 
-Sposta nel backup le vecchie skill che questo set sostituisce, come `wayfinder`, `to-spec`, `implement`, `pr`, `code-review` e `impeccable`, insieme ai relativi agenti. L'elenco esatto è in cima a `scripts/install.sh`.
+Sposta nel backup le vecchie skill che questo set sostituisce, come `wayfinder`, `to-spec`, `implement`, `pr`, `code-review` e `impeccable`, insieme ai relativi agenti. L'elenco esatto è in cima a `bin/cli.mjs`.
 
 Queste cose vanno fatte a mano:
 
 - **Hook di Impeccable:** se li avevi, togli le voci che la nominano da `SessionStart`, `PostToolUse` e `Stop` in `~/.claude/settings.json`.
 - **OpenCode:** legge sia `~/.claude/skills` sia `~/.agents/skills`. Se tieni copie vecchie in `~/.agents/skills`, toglile, altrimenti avrai nomi doppi.
 
-### 5. Attiva la pulizia automatica dei worktree
+### 3. Attiva la pulizia automatica dei worktree
 
-Aggiungi a `~/.claude/settings.json`, con il percorso giusto per te:
+L'installazione copia lo script in `~/.claude/agentic-engineering/clean-worktrees.sh`. Aggiungi a `~/.claude/settings.json`, con il tuo nome utente:
 
 ```json
 {
@@ -95,7 +90,7 @@ Aggiungi a `~/.claude/settings.json`, con il percorso giusto per te:
         "hooks": [
           {
             "type": "command",
-            "command": "/Users/TUO_UTENTE/Developer/skills/scripts/clean-worktrees.sh --all /Users/TUO_UTENTE/Developer",
+            "command": "/Users/TUO_UTENTE/.claude/agentic-engineering/clean-worktrees.sh --all /Users/TUO_UTENTE/Developer",
             "async": true
           }
         ]
@@ -107,7 +102,7 @@ Aggiungi a `~/.claude/settings.json`, con il percorso giusto per te:
 
 Dettagli in [Branch, worktree e pulizia](#branch-worktree-e-pulizia).
 
-### 6. Prepara ogni repo
+### 4. Prepara ogni repo
 
 Dentro ogni repo in cui vuoi lavorare, una volta sola:
 
@@ -118,10 +113,15 @@ Dentro ogni repo in cui vuoi lavorare, una volta sola:
 ### Aggiornare e disinstallare
 
 ```bash
-git pull                      # aggiorna le skill
-./scripts/install.sh --apply  # solo se ne sono state aggiunte di nuove
-./scripts/install.sh --uninstall   # toglie solo i link verso questa repo
+npx agentic-engineering@latest             # aggiorna: riesegue l'installazione
+npx agentic-engineering@latest uninstall   # toglie solo ciò che aveva messo lui
 ```
+
+L'aggiornamento sovrascrive le copie installate da lui, quindi le modifiche a mano a quelle skill vanno perse. Per modificarle, lavora sulla repo.
+
+### Per chi sviluppa le skill
+
+Clonando la repo, `./scripts/install.sh --apply` crea symlink invece di copie, così le modifiche si vedono subito. Non mescolare i due metodi sullo stesso `~/.claude`.
 
 ### Opzionale
 
@@ -476,7 +476,8 @@ Le immagini costano circa 3-5k token a giro, cioè 10-16k per schermata: è una 
 ```
 skills/<nome>/SKILL.md    una cartella per skill
 agents/                   reviewer e verifier
-scripts/install.sh        crea e toglie i symlink
+bin/cli.mjs               installer per npx (copia in ~/.claude)
+scripts/install.sh        installer a symlink, per chi sviluppa
 scripts/clean-worktrees.sh  pulizia dei worktree al merge
 tests/                    controlli su skill, installazione e pulizia
 NOTICE.md                 origine e licenza di ogni skill
