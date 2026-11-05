@@ -224,7 +224,6 @@ Queste le richiamano gli altri comandi. Puoi digitarle, ma di solito non serve:
 | PR di un'altra persona | `/explain 123`: spiegazione e bozza di review, che pubblichi solo tu |
 | PR a rischio alto | `/explain` ti indica fino a 3 punti critici da leggere con lui |
 | La ricevuta è di un commit vecchio | `/ship` la rifiuta e rilancia la verifica; `/explain` la segnala come scaduta |
-| PR sopra le 400 righe | `/ship` propone di dividerla; se la tieni intera, annota il motivo |
 | PR con più temi insieme | `/ship` la blocca: i temi estranei vanno su un altro branch |
 | Commenti di review da sistemare | Riapri la sessione sul branch, correggi, `/ship` riverifica |
 | CI rossa dopo l'apertura | Correggi sul branch; ogni commit nuovo invalida la ricevuta |
@@ -354,7 +353,7 @@ Risk: medium (cambia il calcolo del totale)
 
 **Branch:** `tipo/argomento`, con tipo `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `perf` o `ci`.
 
-**Regole:** un solo tema per PR, soglia indicativa di 400 righe scritte a mano (escluso il codice generato), `Closes #n` quando il lavoro nasce da una issue.
+**Regole:** un solo tema per PR, nessun limite di righe, `Closes #n` quando il lavoro nasce da una issue.
 
 **Corpo:**
 

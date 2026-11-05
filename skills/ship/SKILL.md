@@ -14,14 +14,13 @@ Work through these in order. A failing gate blocks the PR, except where it says 
 
 1. **Branch.** Not the default branch. Named `<type>/<topic>`; if it has a `worktree-` name, rename it with `git branch -m`. Tree clean.
 2. **One theme.** Every commit serves one purpose. Move unrelated changes to their own branch.
-3. **Size.** Count lines changed against the merge-base, excluding lockfiles and generated code. Above 400, propose a split; if the user keeps it whole, record why under **Scope**.
-4. **Receipt.** The receipt must exist and be bound to `HEAD`:
+3. **Receipt.** The receipt must exist and be bound to `HEAD`:
    ```bash
    receipt="$(git rev-parse --git-path verification-receipt.md)"
    test -f "$receipt" && grep -qx "Commit: $(git rev-parse HEAD)" "$receipt"
    ```
    If this fails, dispatch the `verifier` agent. A failed verification blocks the PR.
-5. **Judge.** Call the Skill tool with `judge`, which applies the risk level. Fix `critical` and `required` findings, commit, and go back to gate 4. Show the rest to the user in the PR's **Risk** section.
+4. **Judge.** Call the Skill tool with `judge`, which applies the risk level. Fix `critical` and `required` findings, commit, and go back to gate 3. Show the rest to the user in the PR's **Risk** section.
 
 ## Open the PR
 
