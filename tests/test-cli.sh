@@ -51,6 +51,7 @@ check "unknown skill fails" '! HOME="$T/home" node "$ROOT/bin/cli.mjs" --skills=
 mkdir -p "$T/proj"
 prun() { (cd "$T/proj" && HOME="$T/home" node "$ROOT/bin/cli.mjs" "$@") >"$T/out" 2>&1; }
 prun --project --skills=spec,tdd
+# shellcheck disable=SC2034  # read by the check strings below, which are eval'd
 P="$T/proj/.claude"
 check "project installs the chosen skills" '[ -f "$P/skills/spec/SKILL.md" ] && [ -f "$P/skills/tdd/SKILL.md" ]'
 check "project skips the others" '[ ! -e "$P/skills/ship" ]'
