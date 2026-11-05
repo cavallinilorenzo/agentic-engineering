@@ -1,11 +1,24 @@
 {
   "name": "agentic-engineering",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Skills and subagents for engineering software with coding agents, installed into ~/.claude.",
   "type": "module",
-  "bin": { "agentic-engineering": "bin/cli.mjs" },
-  "files": ["bin", "skills", "agents", "scripts/clean-worktrees.sh", "NOTICE.md"],
-  "engines": { "node": ">=18" },
-  "repository": { "type": "git", "url": "git+https://github.com/cavallinilorenzo/agentic-engineering.git" },
+  "bin": {
+    "agentic-engineering": "bin/cli.mjs"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "agents",
+    "scripts/clean-worktrees.sh",
+    "NOTICE.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cavallinilorenzo/agentic-engineering.git"
+  },
   "license": "MIT"
 }
