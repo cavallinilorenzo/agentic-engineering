@@ -14,7 +14,7 @@ The issue tracker should have been provided to you. If not, tell the user to run
 
 1. **Load.** Fetch the reference the user passed, with its comments. Read the code it touches, `GLOSSARY.md` and ADRs in the area.
 2. **Find the gaps.** A missing fact goes to the `research` skill. A question about how something feels or looks goes to the `prototype` skill. A choice only the user can make goes to the `grill` skill.
-3. **Decide the design.** Name the data shape first, then the modules, interfaces and seams. Prefer existing seams, and the highest one that works. Use the `codebase-design` skill when an interface is in question. Record a hard-to-reverse decision as an ADR with the `domain-modeling` skill.
+3. **Decide the design.** Name the data shape first, then the modules, interfaces and seams. Prefer existing seams, and the highest one that works. Use the `codebase-design` skill when an interface is in question. Draft a hard-to-reverse decision as an ADR, and a resolved term as a glossary entry, with the `domain-modeling` skill. Keep the drafts as text: do not write them into the repo, and open no branch or PR for them.
 4. **Classify.** Call the Skill tool with `risk`, and state the result.
 5. **Order the work.** Map what depends on what, and put any prefactoring first: make the change easy, then make the easy change.
 6. **Slice vertically.** Each slice is a tracer bullet: a narrow but complete path through every layer, demoable alone, sized to one fresh context window and one reviewable PR. A wide refactor is the exception: sequence it as expand, migrate in batches, contract, keeping CI green between batches.
@@ -22,6 +22,7 @@ The issue tracker should have been provided to you. If not, tell the user to run
 8. **Publish.**
    - One slice: post the plan as a comment on the issue.
    - Several slices: one ticket per slice in dependency order, blockers first, using the tracker's native blocking links, labelled `ready-for-agent`. Each ticket is a sub-issue of the spec when the tracker supports it.
+   - ADR and glossary drafts go in the ticket of the first slice that depends on them, under `## Docs to record`, and every ticket that relies on a decision restates it in prose. `/build` commits them with that slice, so the plan needs no docs-only PR and no merge before building.
 
 Done when every acceptance criterion of the spec is covered by a slice, and every slice has its own verification. Finish by telling the user the next step: `/build <ticket>`, or `/swarm <spec>` to build every ticket, in dependency order, onto one branch.
 
@@ -42,6 +43,9 @@ The command or real interaction that proves it.
 
 ## Risk
 <level> (<reason>)
+
+## Docs to record
+Optional. ADR or glossary text this slice commits.
 
 ## Blocked by
 References, or "None".

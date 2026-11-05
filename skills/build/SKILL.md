@@ -20,8 +20,9 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
    ```
    Then work from that folder and run the `setup` line of `docs/agents/engineering.md` to prepare dependencies. `<type>` is `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `perf` or `ci`.
 3. **Build test-first.** Call the Skill tool with `tdd`, using the seams the plan agreed. Typecheck and run single test files as you go. Run the full suite once at the end. For interface work, use the `ui` skill.
-4. **Commit** small logical steps with Conventional Commit messages in English.
-5. **Verify.** Dispatch the `verifier` agent. On failure, fix and dispatch it again.
+4. **Record docs.** If the ticket has `## Docs to record`, write that ADR and glossary text into the repo in this branch.
+5. **Commit** small logical steps with Conventional Commit messages in English.
+6. **Verify.** Dispatch the `verifier` agent. On failure, fix and dispatch it again.
 
 Done when the receipt's `Commit:` line equals `HEAD`, every acceptance criterion is observed or listed under **Not verified**, and the worktree is clean. Finish by telling the user the next step: `/ship`.
 
