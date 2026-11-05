@@ -4,7 +4,6 @@
 import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { homedir } from "node:os";
-import { createInterface } from "node:readline/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -55,13 +54,36 @@ function projectRoot() {
 }
 
 const interactive = process.stdin.isTTY && process.stdout.isTTY && !flags.has("--yes") && !flags.has("-y");
-const rl = interactive ? createInterface({ input: process.stdin, output: process.stdout }) : null;
+// The pretty prompts are loaded only in a terminal, so piped runs and tests need no dependency.
+const ui = interactive ? await import("@clack/prompts") : null;
+const lines = [];
+const tilde = (m) => m.replaceAll(homedir(), "~");
+// In a terminal, plain copies are summarised; only backups, updates and removals are listed.
+const say = (m) => (ui ? (/^(would copy|copied)\b/.test(m) || lines.push(tilde(m))) : console.log(m));
+const ask = (v) => { if (ui.isCancel(v)) { ui.cancel("Cancelled, nothing changed."); process.exit(0); } return v; };
+
+const BANNER = String.raw`
+ █████╗  ██████╗ ███████╗███╗   ██╗████████╗██╗ ██████╗
+██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝██║██╔════╝
+███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║   ██║██║
+██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║   ██║██║
+██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ██║╚██████╗
+╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝ ╚═════╝`;
+if (ui && command === "install") {
+  console.log(`\x1b[36m${BANNER}\x1b[0m\n\x1b[2m  engineering: skills and agents for Claude Code\x1b[0m\n`);
+  ui.intro("agentic-engineering");
+}
 
 // Scope: ~/.claude for every project, or .claude of the current repo.
 let scope = flags.has("--global") ? "global" : flags.has("--project") ? "project" : null;
 if (!scope && interactive) {
-  const a = (await rl.question(`Where to install?\n  1) Global: ~/.claude, every project\n  2) This repo only: ${join(projectRoot(), ".claude")}\n> [1] `)).trim();
-  scope = a === "2" ? "project" : "global";
+  scope = ask(await ui.select({
+    message: "Where do you want to install?",
+    options: [
+      { value: "global", label: "Global", hint: "~/.claude, every project" },
+      { value: "project", label: "This repo only", hint: join(projectRoot(), ".claude") },
+    ],
+  }));
 }
 scope ??= "global";
 const claude = scope === "project" ? join(projectRoot(), ".claude") : join(homedir(), ".claude");
@@ -80,7 +102,7 @@ function readManifest() {
 }
 
 function moveAway(path, kind) {
-  console.log(`${dry ? "would move" : "moved "} ${path} -> ${join(backup, kind)}/`);
+  say(`${dry ? "would move" : "moved "} ${path} -> ${join(backup, kind)}/`);
   if (dry) return;
   mkdirSync(join(backup, kind), { recursive: true });
   renameSync(path, join(backup, kind, path.split("/").pop()));
@@ -89,14 +111,14 @@ function moveAway(path, kind) {
 function put(src, dest, kind, owned) {
   if (exists(dest)) {
     if (owned && !isLink(dest)) {
-      console.log(`${dry ? "would update" : "updated"} ${dest}`);
+      say(`${dry ? "would update" : "updated"} ${dest}`);
       if (!dry) rmSync(dest, { recursive: true, force: true });
     } else {
       moveAway(dest, kind);
-      console.log(`${dry ? "would copy" : "copied"} ${dest}`);
+      say(`${dry ? "would copy" : "copied"} ${dest}`);
     }
   } else {
-    console.log(`${dry ? "would copy" : "copied"} ${dest}`);
+    say(`${dry ? "would copy" : "copied"} ${dest}`);
   }
   if (dry) return;
   mkdirSync(dirname(dest), { recursive: true });
@@ -113,18 +135,23 @@ async function chooseSkills(all, old) {
   }
   if (!interactive || flags.has("--all")) return all;
   const had = new Set(old.skills);
-  console.log("\nSkills (\u2713 = already installed here):");
-  all.forEach((n, i) => console.log(`  ${String(i + 1).padStart(2)}) ${n}${had.has(n) ? " \u2713" : ""}`));
-  const a = (await rl.question("Numbers or ranges, e.g. 1,3,5-8. Enter or 'all' for every skill.\n> ")).trim().toLowerCase();
-  if (a === "" || a === "all") return all;
-  const picked = new Set();
-  for (const part of a.split(/[\s,]+/).filter(Boolean)) {
-    const m = part.match(/^(\d+)(?:-(\d+))?$/);
-    const lo = m && Number(m[1]), hi = m && Number(m[2] ?? m[1]);
-    if (!m || lo < 1 || hi > all.length || lo > hi) { console.error(`Not a valid choice: ${part}`); process.exit(2); }
-    for (let i = lo; i <= hi; i++) picked.add(all[i - 1]);
-  }
-  return all.filter((n) => picked.has(n));
+  const picked = ask(await ui.multiselect({
+    message: "Which skills do you want to install? (space to toggle, enter to confirm)",
+    options: all.map((n) => ({ value: n, label: n, hint: blurb(n) })),
+    initialValues: had.size ? all.filter((n) => had.has(n)) : all,
+    required: true,
+    maxItems: 12,
+  }));
+  return all.filter((n) => picked.includes(n));
+}
+
+// First sentence of a skill's description, short enough for one terminal line.
+function blurb(name) {
+  try {
+    const m = readFileSync(join(pkgRoot, "skills", name, "SKILL.md"), "utf8").match(/^description:\s*"?(.+?)"?\s*$/m);
+    const first = m[1].split(/\.\s/)[0].replace(/\.$/, "");
+    return first.length > 60 ? first.slice(0, 59).trimEnd() + "…" : first;
+  } catch { return ""; }
 }
 
 async function install() {
@@ -135,15 +162,15 @@ async function install() {
   }
   const skills = await chooseSkills(names("skills", true), old);
   const agents = names("agents", false);
-  if (rl) rl.close();
   if (!skills.length) { console.error("No skill chosen, nothing to do."); process.exit(2); }
-  console.log(`\nInstalling ${skills.length} skills and ${agents.length} agents in ${claude}\n`);
+  if (ui) ui.log.info(`${dry ? "Would install" : "Installing"} ${skills.length} skills and ${agents.length} agents in ${claude}`);
+  else console.log(`\nInstalling ${skills.length} skills and ${agents.length} agents in ${claude}\n`);
   for (const n of skills) put(join(pkgRoot, "skills", n), join(claude, "skills", n), "skills", old.skills.includes(n));
   for (const n of agents) put(join(pkgRoot, "agents", n), join(claude, "agents", n), "agents", old.agents.includes(n));
   // Stable path for the SessionStart hook described in the README. Global only: the hook lives in ~/.claude/settings.json.
   if (scope === "global") {
     const script = join(claude, "agentic-engineering", "clean-worktrees.sh");
-    console.log(`${dry ? "would copy" : "copied"} ${script}`);
+    say(`${dry ? "would copy" : "copied"} ${script}`);
     if (!dry) {
       mkdirSync(dirname(script), { recursive: true });
       cpSync(join(pkgRoot, "scripts", "clean-worktrees.sh"), script);
@@ -157,12 +184,19 @@ async function install() {
     mkdirSync(claude, { recursive: true });
     writeFileSync(manifestPath, JSON.stringify({ version, skills, agents }, null, 2) + "\n");
   }
-  console.log(dry ? "\nNothing changed. Run without --dry-run to do this." : `\nDone. Open a new Claude Code session${scope === "global" ? ", then run /setup in each repo" : ""}.`);
+  const done = dry ? "Nothing changed. Run without --dry-run to do this." : `Done. Open a new Claude Code session${scope === "global" ? ", then run /setup in each repo" : ""}.`;
+  if (ui) {
+    lines.unshift(`Skills  ${skills.join(", ")}`, `Agents  ${agents.map((x) => x.replace(/\.md$/, "")).join(", ")}`, `Where   ${tilde(claude)}`, ...(lines.length ? [""] : []));
+    flush(dry ? "Would install" : "Installed"); ui.outro(done); } else console.log(`\n${done}`);
+}
+
+function flush(title) {
+  if (ui && lines.length) ui.note(lines.splice(0).join("\n"), title);
 }
 
 function remove(path) {
   if (!exists(path)) return;
-  console.log(`${dry ? "would remove" : "removed"} ${path}`);
+  say(`${dry ? "would remove" : "removed"} ${path}`);
   if (!dry) rmSync(path, { recursive: true, force: true });
 }
 
@@ -175,4 +209,4 @@ function uninstall() {
 }
 
 if (command === "install") await install();
-else { rl?.close(); uninstall(); }
+else { uninstall(); if (ui) { flush(dry ? "Would remove" : "Removed"); ui.outro(dry ? "Nothing changed." : "Done."); } }
