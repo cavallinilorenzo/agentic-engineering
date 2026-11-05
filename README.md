@@ -50,13 +50,24 @@ Non sai cosa fare adesso? Digita **`/ask`**: guarda lo stato della repo e ti dic
 npx agentic-engineering@latest
 ```
 
-Copia le skill in `~/.claude/skills/` e gli agenti in `~/.claude/agents/`. Non serve clonare la repo. Per vedere prima cosa cambierebbe, senza toccare nulla:
+In un terminale chiede due cose: **dove** installare e **quali skill**.
+
+- **Globale** (`~/.claude`): le skill valgono in ogni progetto.
+- **Solo questa repo** (`.claude/` nella radice del repo corrente): valgono solo lì, e puoi committarle.
+- **Quali skill:** una lista numerata; rispondi con numeri o intervalli (`1,3,5-8`), oppure Invio per tutte. Le skill si richiamano a vicenda (`/ship` usa `judge`, `verify`, `risk`), quindi se ne togli una, quelle che la nominano non funzionano del tutto.
+
+Gli agenti vanno sempre installati insieme alle skill. Non serve clonare la repo. Senza domande, ad esempio in uno script:
 
 ```bash
-npx agentic-engineering@latest --dry-run
+npx agentic-engineering@latest --global --all               # tutto, globale
+npx agentic-engineering@latest --project --skills=spec,tdd  # solo queste, solo nella repo
+npx agentic-engineering@latest --yes                        # globale, tutte, senza chiedere
+npx agentic-engineering@latest --dry-run                    # mostra cosa cambierebbe, senza toccare nulla
 ```
 
-Se un nome è già occupato, il vecchio elemento viene spostato in `~/.claude/backups/agentic-engineering-<data>/`. Le skill restano `/spec`, `/plan`, ecc., senza prefisso di plugin.
+`--skills` indica l'elenco completo: le skill che aveva messo lui in precedenza nello stesso ambito e che non sono nell'elenco vengono tolte. Lo script di pulizia dei worktree (passo 3) si installa solo in globale.
+
+Se un nome è già occupato, il vecchio elemento viene spostato in `backups/agentic-engineering-<data>/` dentro `.claude`. Le skill restano `/spec`, `/plan`, ecc., senza prefisso di plugin.
 
 Prima della pubblicazione su npm, o per provare un branch, si può usare direttamente GitHub:
 
@@ -113,9 +124,12 @@ Dentro ogni repo in cui vuoi lavorare, una volta sola:
 ### Aggiornare e disinstallare
 
 ```bash
-npx agentic-engineering@latest             # aggiorna: riesegue l'installazione
-npx agentic-engineering@latest uninstall   # toglie solo ciò che aveva messo lui
+npx agentic-engineering@latest                       # aggiorna: riesegue l'installazione
+npx agentic-engineering@latest uninstall --global    # toglie solo ciò che aveva messo lui in ~/.claude
+npx agentic-engineering@latest uninstall --project   # idem, in .claude della repo corrente
 ```
+
+Ogni ambito ha il suo `agentic-engineering.json`, quindi globale e repo si aggiornano e si tolgono separatamente.
 
 L'aggiornamento sovrascrive le copie installate da lui, quindi le modifiche a mano a quelle skill vanno perse. Per modificarle, lavora sulla repo.
 
