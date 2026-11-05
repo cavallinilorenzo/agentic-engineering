@@ -7,6 +7,8 @@ description: Independent review of a diff against repo standards, its spec and, 
 
 Separate axes, each in a fresh `reviewer` agent, so no axis masks another and none inherits the author's reasoning.
 
+Talk to the user in their language. Commits, PR text, issue text and code stay in English.
+
 ## Steps
 
 1. **Pin the fixed point.** Default: the merge-base with the default branch. Capture `git diff <base>...HEAD` and `git log <base>..HEAD --oneline`. A bad ref or an empty diff stops here.

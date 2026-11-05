@@ -10,9 +10,11 @@ The tickets are a **task graph** with a **frontier** of ready tickets. You orche
 
 Tickets that block each other run in order: finishing one widens the frontier. Independent ones run in parallel. A chain with one ready ticket is fine: it runs alone, then the tickets it unblocks follow.
 
-The result is one integration branch and one PR for the whole spec. If the total passes the size limit of `/ship`, say so before starting and offer to split the spec.
+The result is one integration branch and one PR for the whole spec.
 
 The issue tracker should have been provided to you. If not, tell the user to run `/setup`.
+
+Talk to the user in their language. Commits, PR text, issue text and code stay in English.
 
 ## Steps
 

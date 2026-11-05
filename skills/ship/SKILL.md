@@ -8,9 +8,11 @@ disable-model-invocation: true
 
 Open a PR a stranger could trust. Merging stays with the human.
 
+Talk to the user in their language. Commits, PR text, issue text and code stay in English.
+
 ## Gates
 
-Work through these in order. A failing gate blocks the PR, except where it says otherwise.
+Work through these in order. A failing gate blocks the PR, except where it says otherwise. Fix what you can fix yourself and keep going. Ask the user only when a gate fails and cannot be fixed from the repo, then ask once, with your recommendation first, and never about something they already decided in this session.
 
 1. **Branch.** Not the default branch. Named `<type>/<topic>`; if it has a `worktree-` name, rename it with `git branch -m`. Tree clean.
 2. **One theme.** Every commit serves one purpose. Move unrelated changes to their own branch.
@@ -20,7 +22,7 @@ Work through these in order. A failing gate blocks the PR, except where it says 
    test -f "$receipt" && grep -qx "Commit: $(git rev-parse HEAD)" "$receipt"
    ```
    If this fails, dispatch the `verifier` agent. A failed verification blocks the PR.
-4. **Judge.** Call the Skill tool with `judge`, which applies the risk level. Fix `critical` and `required` findings, commit, and go back to gate 3. Show the rest to the user in the PR's **Risk** section.
+4. **Judge.** Call the Skill tool with `judge`, which applies the risk level. Fix `critical` and `required` findings without asking, along with the optional ones that are cheap, commit, and go back to gate 3. Put what remains in the PR's **Risk** section and open the PR; do not stop to present the findings first.
 
 ## Open the PR
 

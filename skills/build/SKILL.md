@@ -8,9 +8,11 @@ disable-model-invocation: true
 
 One ticket, one worktree, one branch, one PR. Start from a fresh session: the ticket holds the context.
 
+Talk to the user in their language. Commits, PR text, issue text and code stay in English.
+
 ## Steps
 
-1. **Load the work.** If the user passed a reference, fetch it and state its title. Otherwise use the conversation.
+1. **Load the work, and check it may start.** If the user passed a reference, fetch it with its comments, labels, assignee and blocking links, and state its title. Otherwise use the conversation. Stop **now**, before any worktree, if a comment or label says the ticket is not approved, on hold, blocked or waiting for a decision, or if a blocker is still open. Quote the line, give one recommendation, and wait. A ticket that passes this check is not questioned again later.
 2. **Enter a worktree.** You are in one when `git rev-parse --git-dir` differs from `git rev-parse --git-common-dir`. Otherwise use the harness's worktree tool, or:
    ```bash
    git fetch origin
@@ -23,4 +25,4 @@ One ticket, one worktree, one branch, one PR. Start from a fresh session: the ti
 
 Done when the receipt's `Commit:` line equals `HEAD`, every acceptance criterion is observed or listed under **Not verified**, and the worktree is clean. Finish by telling the user the next step: `/ship`.
 
-If the work grows past one reviewable PR, stop and propose a split.
+Keep going on your own between steps: wait for the verifier without narrating the wait, and ask the user only when something cannot be decided from the ticket, the repo or the skills. If the work grows past one reviewable PR, say so in one line and carry on; the user decides how to split.

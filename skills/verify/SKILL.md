@@ -7,6 +7,8 @@ description: Prove a change works against the real artifact and write a verifica
 
 Prove behaviour by observing the real thing. A compile, a green unit test or an agent's report is a proxy.
 
+Talk to the user in their language. Commits, PR text, issue text and code stay in English.
+
 ## Steps
 
 1. **Pin the commit.** Commit pending work. Record `git rev-parse HEAD`.
