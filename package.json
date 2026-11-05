@@ -20,5 +20,8 @@
     "type": "git",
     "url": "git+https://github.com/cavallinilorenzo/agentic-engineering.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^1.5.0"
+  }
 }
