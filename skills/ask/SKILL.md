@@ -26,7 +26,7 @@ Done when the user has one next action, or their question about the workflow is 
 | | `/spec` | You know what you want: write down what and why |
 | Plan | `/plan` | Decide how, in what order, with what risk |
 | Build | `/build` | One ticket, test-first, in a worktree |
-| | `/swarm` | At least three independent tickets in parallel |
+| | `/swarm` | Every ticket of a spec, in dependency order, on one branch |
 | | `/fix` | Something is broken or slow |
 | | `/ui` | A screen, redesign or polish |
 | Verify | `/verify` | Prove it works (runs by itself after build and fix) |

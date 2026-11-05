@@ -47,7 +47,7 @@ File copiati dentro skill rielaborate:
 | `spec` | Matt `to-spec` | Solo cosa e perché: le decisioni tecniche passano a `plan`; aggiunti i criteri di accettazione |
 | `plan` | Matt `to-tickets`, Addy `planning-and-task-breakdown`, Matt `to-spec` | Fase sempre presente, che unisce design, rischio, dipendenze e fette; pubblica ticket solo se servono |
 | `build` | Matt `implement`, Addy `incremental-implementation` | Worktree obbligatorio; chiude con il `verifier` e la ricevuta |
-| `swarm` | Matt `implement-spec` | Soglia di 3 ticket indipendenti; massimo 3 agenti alla volta; verifica finale |
+| `swarm` | Matt `implement-spec` | Massimo 3 agenti alla volta; controllo dei file in comune; verifica finale |
 | `fix` | Matt `diagnosing-bugs`, pstack `principle-fix-root-causes` | Base copiata; aggiunti regola sulla causa radice, worktree e verifica finale |
 | `judge` | Matt `code-review`, Addy `code-review-and-quality`, pstack `blast-radius` | Assi separati di Matt, controlli di Addy, asse blast radius; profondità decisa dal rischio |
 | `ship` | Matt `pr`, pstack `opening-a-pr` | Controlli bloccanti e formato PR unificato. Il `pr` di Matt cita [Dex Horthy, HumanLayer](https://github.com/humanlayer/skills) |

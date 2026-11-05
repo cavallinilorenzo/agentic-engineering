@@ -1,6 +1,6 @@
 ---
 name: swarm
-description: "Build a spec's independent tickets in parallel, each in its own worktree, onto one integration branch."
+description: "Build every ticket of a spec, following the blocking links, each in its own worktree, onto one integration branch."
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,9 @@ disable-model-invocation: true
 
 The tickets are a **task graph** with a **frontier** of ready tickets. You orchestrate; fresh implementer subagents build.
 
-Parallel work costs usage quota for every agent and review attention at the end. Use it when at least three tickets are truly independent. For fewer, tell the user to run `/build` per ticket.
+Tickets that block each other run in order: finishing one widens the frontier. Independent ones run in parallel. A chain with one ready ticket is fine: it runs alone, then the tickets it unblocks follow.
+
+The result is one integration branch and one PR for the whole spec. If the total passes the size limit of `/ship`, say so before starting and offer to split the spec.
 
 The issue tracker should have been provided to you. If not, tell the user to run `/setup`.
 

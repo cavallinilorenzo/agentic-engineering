@@ -23,7 +23,7 @@ The issue tracker should have been provided to you. If not, tell the user to run
    - One slice: post the plan as a comment on the issue.
    - Several slices: one ticket per slice in dependency order, blockers first, using the tracker's native blocking links, labelled `ready-for-agent`. Each ticket is a sub-issue of the spec when the tracker supports it.
 
-Done when every acceptance criterion of the spec is covered by a slice, and every slice has its own verification. Finish by telling the user the next step: `/build <ticket>`, or `/swarm <spec>` for at least three independent tickets.
+Done when every acceptance criterion of the spec is covered by a slice, and every slice has its own verification. Finish by telling the user the next step: `/build <ticket>`, or `/swarm <spec>` to build every ticket, in dependency order, onto one branch.
 
 ## Ticket template
 

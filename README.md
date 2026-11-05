@@ -140,7 +140,7 @@ npx skills add emilkowalski/skills --skill emil-design-eng
 | | `/spec` | Sai cosa vuoi: fissa cosa e perché |
 | **Plan** | `/plan` | Decide come, in che ordine e con quale rischio |
 | **Build** | `/build` | Un ticket, test-first, in un worktree |
-| | `/swarm` | Almeno 3 ticket indipendenti in parallelo |
+| | `/swarm` | Tutti i ticket di una spec, in ordine di dipendenza |
 | | `/fix` | Qualcosa è rotto o lento |
 | | `/ui` | Una schermata, un redesign o una rifinitura |
 | **Verify** | `/verify` | Prova che funziona. Parte da sola dopo `/build` e `/fix` |
@@ -188,7 +188,7 @@ Queste le richiamano gli altri comandi. Puoi digitarle, ma di solito non serve:
 |---|---|
 | Un ticket alla volta | Una sessione nuova per ticket: `/build #123`, poi `/ship` |
 | Più ticket con parti in comune | Uno alla volta, nell'ordine delle dipendenze |
-| Almeno 3 ticket indipendenti, tutti insieme | `/swarm #spec` |
+| Tutti i ticket della spec in un colpo, anche con dipendenze | `/swarm #spec` |
 | Voglio lanciare più agenti a mano | Una sessione per ticket: ognuno crea il proprio worktree |
 | Due ticket toccherebbero gli stessi file | Non in parallelo: mettine uno come bloccante dell'altro |
 | Il lavoro cresce oltre una PR rivedibile | `/build` si ferma e propone di spezzarlo |
@@ -277,7 +277,7 @@ Con una sola fetta il piano è un commento sulla issue. Con più fette crea un t
 ### 3. Build: costruire
 
 - **`/build`** lavora su un ticket: crea il worktree, scrive prima il test, implementa, committa e lancia il `verifier`.
-- **`/swarm`** esegue più ticket indipendenti con subagenti paralleli, ognuno nel suo worktree, verso un unico branch di integrazione.
+- **`/swarm`** esegue tutti i ticket della spec seguendo i blocchi: gli indipendenti in parallelo, gli altri appena sbloccati. Un subagente per ticket, ognuno nel suo worktree, verso un unico branch di integrazione e una sola PR.
 - **`/fix`** prima crea un comando che "va rosso" su quel bug, poi minimizza, formula ipotesi, trova la causa radice, scrive il test di regressione e verifica.
 - **`/ui`** costruisce con un ciclo visivo a budget ([dettagli](#interfacce)).
 
