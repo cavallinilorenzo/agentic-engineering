@@ -37,15 +37,15 @@ File copiati dentro skill rielaborate:
 | File | Origine |
 |---|---|
 | `skills/ask/PHASE-BOUNDARIES.md` | Matt `engineering/ask-matt` |
-| `skills/setup/domain.md`, `issue-tracker-*.md`, `triage-labels.md` | Matt `engineering/setup-matt-pocock-skills` (riferimenti a `/fog`, `/plan` e `/arch`) |
+| `skills/setup/domain.md`, `issue-tracker-*.md`, `triage-labels.md` | Matt `engineering/setup-matt-pocock-skills` (riferimenti a `/fog`, `/slice` e `/arch`) |
 | `skills/ui/references/web-interface-guidelines.md` | Vercel `command.md` |
 
 ## Rielaborate
 
 | Skill | Fonti | Cosa è cambiato |
 |---|---|---|
-| `spec` | Matt `to-spec` | Solo cosa e perché: le decisioni tecniche passano a `plan`; aggiunti i criteri di accettazione |
-| `plan` | Matt `to-tickets`, Addy `planning-and-task-breakdown`, Matt `to-spec` | Fase sempre presente, che unisce design, rischio, dipendenze e fette; pubblica ticket solo se servono |
+| `spec` | Matt `to-spec` | Solo cosa e perché: le decisioni tecniche passano a `slice`; aggiunti i criteri di accettazione |
+| `slice` | Matt `to-tickets`, Addy `planning-and-task-breakdown`, Matt `to-spec` | Fase sempre presente, che unisce design, rischio, dipendenze e fette; pubblica ticket solo se servono |
 | `build` | Matt `implement`, Addy `incremental-implementation` | Worktree obbligatorio; chiude con il `verifier` e la ricevuta |
 | `swarm` | Matt `implement-spec` | Massimo 3 agenti alla volta; controllo dei file in comune; verifica finale |
 | `fix` | Matt `diagnosing-bugs`, pstack `principle-fix-root-causes` | Base copiata; aggiunti regola sulla causa radice, worktree e verifica finale |

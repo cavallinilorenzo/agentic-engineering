@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Spec
 
-Synthesise what the conversation already knows: the **what** and the **why**. The how belongs to `/plan`. If a question remains that only the user can answer, ask it; everything else you can look up.
+Synthesise what the conversation already knows: the **what** and the **why**. The how belongs to `/slice`. If a question remains that only the user can answer, ask it; everything else you can look up.
 
 The issue tracker should have been provided to you. If not, tell the user to run `/setup`.
 
@@ -16,7 +16,7 @@ The issue tracker should have been provided to you. If not, tell the user to run
 2. Write the spec with the template below. Every acceptance criterion must be something an outsider could check by using the product.
 3. Publish it to the tracker with the `ready-for-agent` label.
 
-Done when the issue exists and its URL is shown. Finish by telling the user the next step: `/plan <issue>`, or `/build <issue>` when the change is obvious.
+Done when the issue exists and its URL is shown. Finish by telling the user the next step: `/slice <issue>`, or `/build <issue>` when the change is obvious.
 
 ## Template
 

@@ -24,7 +24,7 @@ Done when the user has one next action, or their question about the workflow is 
 | Define | `/fog` | Total fog: too big or too unclear for one session |
 | | `/grill` | You know a little; an interview will sharpen it |
 | | `/spec` | You know what you want: write down what and why |
-| Plan | `/plan` | Decide how, in what order, with what risk |
+| Slice | `/slice` | Decide how, in what order, with what risk |
 | Build | `/build` | One ticket, test-first, in a worktree |
 | | `/swarm` | Every ticket of a spec, in dependency order, on one branch |
 | | `/fix` | Something is broken or slow |
@@ -47,8 +47,8 @@ Internal, called by the others but also typeable: `tdd`, `risk`, `research`, `pr
 
 - **Bug:** `/fix` → `/ship` → `/explain`
 - **Small and clear:** `/build` → `/ship` → `/explain`
-- **Feature:** `/grill` → `/spec` → `/plan` → `/build` per ticket → `/ship` → `/explain`
-- **Fog:** `/fog` over many sessions → `/spec` → `/plan` → `/build` or `/swarm`
+- **Feature:** `/grill` → `/spec` → `/slice` → `/build` per ticket → `/ship` → `/explain`
+- **Fog:** `/fog` over many sessions → `/spec` → `/slice` → `/build` or `/swarm`
 - **Someone else's PR:** `/explain <number>`
 - **Issues piling up:** `/triage` → `/build`
 - **New repo:** `/setup` first

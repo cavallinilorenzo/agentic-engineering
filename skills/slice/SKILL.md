@@ -1,10 +1,10 @@
 ---
-name: plan
+name: slice
 description: "Decide how to build a spec: design decisions, risk, dependency order and vertical slices, with no code written."
 disable-model-invocation: true
 ---
 
-# Plan
+# Slice
 
 Turn a spec, an issue or the conversation into the **how**. Read and think only: the sole outputs are the plan and any research or prototype it needs.
 

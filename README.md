@@ -6,7 +6,7 @@ Sono parole brevi da digitare in Claude Code. Ogni parola dice in che fase del l
 
 ```
 Nebbia totale   /fog ───┐
-So poco         /grill ─┴→ /spec → /plan → /build → /ship → /explain → merge
+So poco         /grill ─┴→ /spec → /slice → /build → /ship → /explain → merge
 So già cosa voglio         /spec ↗         /swarm     ↑
                                            /fix       └ lancia /verify e /judge
                                            /ui
@@ -67,7 +67,7 @@ npx agentic-engineering@latest --dry-run                    # mostra cosa cambie
 
 `--skills` indica l'elenco completo: le skill che aveva messo lui in precedenza nello stesso ambito e che non sono nell'elenco vengono tolte. Lo script di pulizia dei worktree (passo 3) si installa solo in globale.
 
-Se un nome è già occupato, il vecchio elemento viene spostato in `backups/agentic-engineering-<data>/` dentro `.claude`. Le skill restano `/spec`, `/plan`, ecc., senza prefisso di plugin.
+Se un nome è già occupato, il vecchio elemento viene spostato in `backups/agentic-engineering-<data>/` dentro `.claude`. Le skill restano `/spec`, `/slice`, ecc., senza prefisso di plugin.
 
 Prima della pubblicazione su npm, o per provare un branch, si può usare direttamente GitHub:
 
@@ -152,7 +152,7 @@ npx skills add emilkowalski/skills --skill emil-design-eng
 | **Define** | `/fog` | Nebbia totale: lavoro troppo grande o confuso per una sessione |
 | | `/grill` | Sai poco: un'intervista lo chiarisce |
 | | `/spec` | Sai cosa vuoi: fissa cosa e perché |
-| **Plan** | `/plan` | Decide come, in che ordine e con quale rischio |
+| **Slice** | `/slice` | Decide come, in che ordine e con quale rischio |
 | **Build** | `/build` | Un ticket, test-first, in un worktree |
 | | `/swarm` | Tutti i ticket di una spec, in ordine di dipendenza |
 | | `/fix` | Qualcosa è rotto o lento |
@@ -174,11 +174,11 @@ Queste le richiamano gli altri comandi. Puoi digitarle, ma di solito non serve:
 | Skill | Cosa fa | Chi la usa |
 |---|---|---|
 | `tdd` | Ciclo test rosso → verde alle giunture concordate | `/build`, `/swarm` |
-| `risk` | Livelli di rischio e scala di certezza | `/plan`, `/verify`, `/judge`, `/explain` |
-| `research` | Un agente in background cerca fatti su fonti primarie e li salva con citazioni | `/plan`, `/fog` |
-| `prototype` | Codice usa e getta per rispondere a una domanda di logica o di aspetto | `/plan`, `/fog`, `/ui` |
-| `domain-modeling` | Tiene aggiornati glossario e ADR | `/plan`, `/fog`, `/arch` |
-| `codebase-design` | Vocabolario per progettare moduli profondi | `/plan`, `/arch`, `tdd` |
+| `risk` | Livelli di rischio e scala di certezza | `/slice`, `/verify`, `/judge`, `/explain` |
+| `research` | Un agente in background cerca fatti su fonti primarie e li salva con citazioni | `/slice`, `/fog` |
+| `prototype` | Codice usa e getta per rispondere a una domanda di logica o di aspetto | `/slice`, `/fog`, `/ui` |
+| `domain-modeling` | Tiene aggiornati glossario e ADR | `/slice`, `/fog`, `/arch` |
+| `codebase-design` | Vocabolario per progettare moduli profondi | `/slice`, `/arch`, `tdd` |
 | `writing-for-agents` | Regole per scrivere documenti per agenti | `/retro`, e chi modifica queste skill |
 
 ## Cosa fare in ogni situazione
@@ -189,12 +189,12 @@ Queste le richiamano gli altri comandi. Puoi digitarle, ma di solito non serve:
 |---|---|
 | Repo mai preparata | `/setup` |
 | Ho un'idea ma non so nemmeno se ha senso | `/fog` se è enorme, altrimenti `/grill` |
-| So cosa voglio, ma è una feature con più parti | `/spec` → `/plan` → `/build` per ogni ticket |
+| So cosa voglio, ma è una feature con più parti | `/spec` → `/slice` → `/build` per ogni ticket |
 | So esattamente cosa fare ed è piccolo | `/build` e descrivi il lavoro |
 | Cambio una riga di testo o documentazione | `/build`: il rischio è basso e i controlli sono minimi |
-| Non so se una cosa è tecnicamente fattibile | Durante `/plan` parte `research`, oppure chiedilo tu |
-| Non so come dovrebbe sembrare o comportarsi | Durante `/plan` parte `prototype`, oppure chiedilo tu |
-| Ho già una issue pronta | `/build #123`, oppure `/plan #123` se serve un piano |
+| Non so se una cosa è tecnicamente fattibile | Durante `/slice` parte `research`, oppure chiedilo tu |
+| Non so come dovrebbe sembrare o comportarsi | Durante `/slice` parte `prototype`, oppure chiedilo tu |
+| Ho già una issue pronta | `/build #123`, oppure `/slice #123` se serve un piano |
 
 ### Costruire
 
@@ -206,7 +206,7 @@ Queste le richiamano gli altri comandi. Puoi digitarle, ma di solito non serve:
 | Voglio lanciare più agenti a mano | Una sessione per ticket: ognuno crea il proprio worktree |
 | Due ticket toccherebbero gli stessi file | Non in parallelo: mettine uno come bloccante dell'altro |
 | Il lavoro cresce oltre una PR rivedibile | `/build` si ferma e propone di spezzarlo |
-| Grande rinomina o refactor su tutta la codebase | `/plan`: lo sequenzia in espansione, migrazione a blocchi e contrazione |
+| Grande rinomina o refactor su tutta la codebase | `/slice`: lo sequenzia in espansione, migrazione a blocchi e contrazione |
 
 ### Correggere
 
@@ -281,9 +281,9 @@ Scegli in base a quanto sai già:
 
 Puoi saltare questa fase quando il lavoro è piccolo e chiaro.
 
-### 2. Plan: come e in che ordine
+### 2. Slice: come e in che ordine
 
-**`/plan`** non scrive codice. Fissa le decisioni su dati, moduli e giunture, assegna il rischio, ordina le dipendenze e divide il lavoro in **fette verticali**: ogni fetta è un percorso completo e dimostrabile da sola, grande quanto una sessione e una PR. Poi ti mostra tutto e aspetta la tua approvazione.
+**`/slice`** non scrive codice. Fissa le decisioni su dati, moduli e giunture, assegna il rischio, ordina le dipendenze e divide il lavoro in **fette verticali**: ogni fetta è un percorso completo e dimostrabile da sola, grande quanto una sessione e una PR. Poi ti mostra tutto e aspetta la tua approvazione.
 
 Con una sola fetta il piano è un commento sulla issue. Con più fette crea un ticket per ciascuna, con i blocchi nativi del tracker.
 
@@ -460,7 +460,7 @@ Questa repo definisce due soli agenti:
 
 | Lavoro | Modello | Perché |
 |---|---|---|
-| `/fog`, `/plan`, `/judge` a rischio alto, direzione in `/ui` | Opus 5.5 | Qui un errore costa di più |
+| `/fog`, `/slice`, `/judge` a rischio alto, direzione in `/ui` | Opus 5.5 | Qui un errore costa di più |
 | `/build`, `/fix`, `/ship`, `reviewer`, `verifier` | Sonnet 5.5 | Regge la maggior parte del lavoro e costa meno |
 | Compiti semplici e ripetitivi | Haiku 5.5 | Il più economico |
 | Secondo parere e lavori a basso rischio, su repo non sensibili | OpenCode Go | Un modello diverso trova errori diversi |
@@ -511,7 +511,7 @@ Le parti deterministiche hanno test: installazione, pulizia dei worktree, strutt
 | Da collaudare | Rischio |
 |---|---|
 | Il flusso completo, da `/spec` a `/explain` | Mai eseguito end-to-end |
-| `/plan` e `/verify` che sostituiscono i comandi omonimi di Claude Code | Documentato per il terminale locale, non per altre superfici |
+| `/slice` e `/verify` che sostituiscono i comandi omonimi di Claude Code | Documentato per il terminale locale, non per altre superfici |
 | Caricamento degli screenshot in prerelease | Comandi non ancora eseguiti su una PR reale |
 | Il budget di `/ui` | I token sono una stima |
 | `second_opinion` con OpenCode Go | Il comando esatto va definito |
