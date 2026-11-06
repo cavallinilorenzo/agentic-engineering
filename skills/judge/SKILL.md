@@ -12,7 +12,7 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
 ## Steps
 
 1. **Pin the fixed point.** Default: the merge-base with the default branch. Capture `git diff <base>...HEAD` and `git log <base>..HEAD --oneline`. A bad ref or an empty diff stops here.
-2. **Classify.** Call the Skill tool with `risk`. Low risk with green CI needs no judge: report that and stop.
+2. **Classify.** Use the risk level the caller states; otherwise call the Skill tool with `risk`. Low risk with green CI needs no judge: report that and stop.
 3. **Gather sources.**
    - **Standards**: `CODING_STANDARDS.md`, `CONTRIBUTING.md`, and any file documenting how code is written.
    - **Spec**: issues referenced by commits, a path from the user, or files matching the branch. With no spec, skip that axis and say so.

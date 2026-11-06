@@ -12,7 +12,7 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
 ## Steps
 
 1. **Pin the commit.** Commit pending work. Record `git rev-parse HEAD`.
-2. **Load the recipe.** Read `docs/agents/engineering.md`. If it is missing, derive commands from CI and the build files, and say that `/setup` has not run. Call the Skill tool with `risk`, then classify the change.
+2. **Load the recipe.** Read `docs/agents/engineering.md`. If it is missing, derive commands from CI and the build files, and say that `/setup` has not run. Classify the change with `risk`: call the Skill tool with `risk` unless the caller stated the level or the skill is already in context.
 3. **List the criteria.** Take acceptance criteria from the ticket, spec or plan; for a bug, the original symptom. With no source, derive them from the diff and label them `inferred`.
 4. **Run the commands** the recipe names, fresh, at the pinned commit. Keep each command's exit status and the one line that summarises it.
 5. **Exercise the behaviour.** Drive every criterion through the real artifact: dev server, CLI, app. Climb the certainty ladder as far as the risk level demands. Turn a bug found here into a failing test, then fix it and restart from step 1.

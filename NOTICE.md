@@ -50,7 +50,7 @@ File copiati dentro skill rielaborate:
 | `swarm` | Matt `implement-spec` | Massimo 3 agenti alla volta; controllo dei file in comune; verifica finale |
 | `fix` | Matt `diagnosing-bugs`, pstack `principle-fix-root-causes` | Base copiata; aggiunti regola sulla causa radice, worktree e verifica finale |
 | `judge` | Matt `code-review`, Addy `code-review-and-quality`, pstack `blast-radius` | Assi separati di Matt, controlli di Addy, asse blast radius; profondità decisa dal rischio |
-| `ship` | Matt `pr`, pstack `opening-a-pr` | Controlli bloccanti e formato PR unificato. Il `pr` di Matt cita [Dex Horthy, HumanLayer](https://github.com/humanlayer/skills) |
+| `ship` | Matt `pr`, pstack `opening-a-pr`, Matt `implement` (controlli veloci spesso, suite completa una volta), Addy `/ship` (fan-out parallelo) | Controlli bloccanti in ordine di costo, verifica una sola volta in fondo, formato PR unificato. Il `pr` di Matt cita [Dex Horthy, HumanLayer](https://github.com/humanlayer/skills) |
 | `release` | Addy `shipping-and-launch` | Da checklist generale a procedura con go/no-go umano, che usa il meccanismo della repo |
 | `setup` | Matt `setup-matt-pocock-skills`, Addy `constraint-driven-development` | Aggiunti rischio, dati sensibili e ricetta di verifica provata |
 | `ask` | Matt `ask-matt` | Stessa idea: riscritta sul flusso di questa repo; guarda anche lo stato della repo |

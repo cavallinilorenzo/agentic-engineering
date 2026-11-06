@@ -12,17 +12,18 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
 
 ## Gates
 
-Work through these in order. A failing gate blocks the PR, except where it says otherwise. Fix what you can fix yourself and keep going. Ask the user only when a gate fails and cannot be fixed from the repo, then ask once, with your recommendation first, and never about something they already decided in this session.
+Work through these in order, cheapest first: each gate spares the dearer ones below it from running twice. A failing gate blocks the PR, except where it says otherwise. Fix what you can fix yourself and keep going. Ask the user only when a gate fails and cannot be fixed from the repo, then ask once, with your recommendation first. The repo answers the rest: the remote, the target repository (`gh repo view --json nameWithOwner`), the state of a worktree.
 
-1. **Branch.** Not the default branch. Named `<type>/<topic>`; if it has a `worktree-` name, rename it with `git branch -m`. Tree clean.
+1. **Branch.** Not the default branch. Named `<type>/<topic>`; if it has a `worktree-` name, rename it with `git branch -m`. Uncommitted changes on the branch are its own work: let gate 3 pass on them, then commit them.
 2. **One theme.** Every commit serves one purpose. Move unrelated changes to their own branch.
-3. **Receipt.** The receipt must exist and be bound to `HEAD`:
+3. **Fast checks.** Run the fast checks from `engineering.md` (format, lint, types, the tests of the touched files) and fix what fails. Seconds here save minutes at gate 5. Commit.
+4. **Judge.** Call the Skill tool with `risk` once, then with `judge`, and pass the level on. Fix `critical` and `required` findings without asking, along with the optional ones that are cheap, axis by axis as each report returns, so a slow axis never holds up the fixes of a fast one. Commit once, then run gate 3 again. Put what remains in the PR's **Risk** section; do not stop to present the findings first.
+5. **Receipt.** Last, and once, because every earlier fix moves `HEAD` and voids the receipt. It must exist and be bound to `HEAD`:
    ```bash
    receipt="$(git rev-parse --git-path verification-receipt.md)"
    test -f "$receipt" && grep -qx "Commit: $(git rev-parse HEAD)" "$receipt"
    ```
-   If this fails, dispatch the `verifier` agent. A failed verification blocks the PR.
-4. **Judge.** Call the Skill tool with `judge`, which applies the risk level. Fix `critical` and `required` findings without asking, along with the optional ones that are cheap, commit, and go back to gate 3. Put what remains in the PR's **Risk** section and open the PR; do not stop to present the findings first.
+   If this fails, dispatch the `verifier` agent. A failed verification blocks the PR: fix it, run gates 3 and 5 again, and run gate 4 again only when the fix touched behaviour a reviewer already cleared.
 
 ## Open the PR
 
