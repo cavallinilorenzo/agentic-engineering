@@ -1,6 +1,6 @@
 {
   "name": "agentic-engineering",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Skills and subagents for engineering software with coding agents, installed into ~/.claude.",
   "type": "module",
   "bin": {
