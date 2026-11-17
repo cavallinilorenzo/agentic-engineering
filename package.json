@@ -1,6 +1,6 @@
 {
   "name": "agentic-engineering",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Skills and subagents for engineering software with coding agents, installed into ~/.claude.",
   "keywords": [
     "claude-code",
