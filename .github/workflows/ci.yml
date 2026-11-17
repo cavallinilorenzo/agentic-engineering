@@ -46,7 +46,7 @@ jobs:
       - name: Install from the tarball
         run: |
           export HOME="$(mktemp -d)"
-          npx --yes "$GITHUB_WORKSPACE"/agentic-engineering-*.tgz --global --all
+          npm exec --yes --package="$(ls "$GITHUB_WORKSPACE"/agentic-engineering-*.tgz)" -- agentic-engineering --global --all
           test -f "$HOME/.claude/skills/spec/SKILL.md"
           test -f "$HOME/.claude/agents/reviewer.md"
 
