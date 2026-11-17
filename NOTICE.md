@@ -1,72 +1,72 @@
-# Origine di ogni skill
+# Origin of every skill
 
-Questo progetto è sotto licenza MIT (vedi [LICENSE](LICENSE)). Riusa materiale altrui, citato qui con commit e licenza.
+This project is licensed under the MIT licence (see [LICENSE](LICENSE)). It reuses other people's material, credited here with commit and licence.
 
-- **Copiata:** testo originale. Cambiano solo i nomi e i riferimenti indicati.
-- **Rielaborata:** parte da una o più fonti, con struttura o contenuto riscritti.
-- **Nuova:** scritta qui. Le fonti sono solo spunti.
+- **Copied:** original text. Only the names and the listed references change.
+- **Reworked:** starts from one or more sources, with structure or content rewritten.
+- **New:** written here. The sources are only inspiration.
 
-## Commit delle fonti
+## Source commits
 
-| Sigla | Progetto | Commit | Licenza |
+| Key | Project | Commit | Licence |
 |---|---|---|---|
 | Matt | [mattpocock/skills](https://github.com/mattpocock/skills) | `4ae2317ddb22b046e26455e4f9c9b3aaaf62212d` | MIT |
 | Addy | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | `301b02b12bff98e4688e6984af6556802322bbde` | MIT |
-| pstack | [cursor/plugins, cartella pstack](https://github.com/cursor/plugins/tree/main/pstack) | `bb68f2365eceafa0cb2d253112f675acf5f144cc` | MIT |
+| pstack | [cursor/plugins, pstack folder](https://github.com/cursor/plugins/tree/main/pstack) | `bb68f2365eceafa0cb2d253112f675acf5f144cc` | MIT |
 | Vercel | [vercel-labs/web-interface-guidelines](https://github.com/vercel-labs/web-interface-guidelines) | `434b7f91364665f2f733b310ec54809bf8f37937` | MIT |
 
-## Copiate
+## Copied
 
-| Skill | Origine | Cosa cambia |
+| Skill | Origin | What changes |
 |---|---|---|
-| `grill` | Matt `productivity/grilling` | Nome |
-| `fog` | Matt `engineering/wayfinder` | Nome; riferimenti a `grill` e `/setup` |
-| `arch` | Matt `engineering/improve-codebase-architecture` | Nome; riferimento a `grill` |
-| `triage` | Matt `engineering/triage` | Riferimento a `/setup` |
-| `retro` | Matt `engineering/retro` | Nessuna |
-| `handoff` | Matt `productivity/handoff` | Nessuna |
-| `tdd` | Matt `engineering/tdd` | Riferimento a `judge` |
-| `prototype` | Matt `engineering/prototype` | Nessuna |
-| `research` | Matt `engineering/research` | Nessuna |
-| `domain-modeling` | Matt `engineering/domain-modeling` | Nessuna |
-| `codebase-design` | Matt `engineering/codebase-design` | Nessuna |
-| `writing-for-agents` | Matt `productivity/writing-for-agents` | Nessuna |
+| `grill` | Matt `productivity/grilling` | Name |
+| `fog` | Matt `engineering/wayfinder` | Name; references to `grill` and `/setup` |
+| `arch` | Matt `engineering/improve-codebase-architecture` | Name; reference to `grill` |
+| `triage` | Matt `engineering/triage` | Reference to `/setup` |
+| `retro` | Matt `engineering/retro` | None |
+| `handoff` | Matt `productivity/handoff` | None |
+| `tdd` | Matt `engineering/tdd` | Reference to `judge` |
+| `prototype` | Matt `engineering/prototype` | None |
+| `research` | Matt `engineering/research` | None |
+| `domain-modeling` | Matt `engineering/domain-modeling` | None |
+| `codebase-design` | Matt `engineering/codebase-design` | None |
+| `writing-for-agents` | Matt `productivity/writing-for-agents` | None |
 
-File copiati dentro skill rielaborate:
+Files copied inside reworked skills:
 
-| File | Origine |
+| File | Origin |
 |---|---|
 | `skills/ask/PHASE-BOUNDARIES.md` | Matt `engineering/ask-matt` |
-| `skills/setup/domain.md`, `issue-tracker-*.md`, `triage-labels.md` | Matt `engineering/setup-matt-pocock-skills` (riferimenti a `/fog`, `/slice` e `/arch`) |
+| `skills/setup/domain.md`, `issue-tracker-*.md`, `triage-labels.md` | Matt `engineering/setup-matt-pocock-skills` (references to `/fog`, `/slice` and `/arch`) |
 | `skills/ui/references/web-interface-guidelines.md` | Vercel `command.md` |
 
-## Rielaborate
+## Reworked
 
-| Skill | Fonti | Cosa è cambiato |
+| Skill | Sources | What changed |
 |---|---|---|
-| `spec` | Matt `to-spec` | Solo cosa e perché: le decisioni tecniche passano a `slice`; aggiunti i criteri di accettazione |
-| `slice` | Matt `to-tickets`, Addy `planning-and-task-breakdown`, Matt `to-spec` | Fase sempre presente, che unisce design, rischio, dipendenze e fette; pubblica ticket solo se servono |
-| `build` | Matt `implement`, Addy `incremental-implementation` | Worktree obbligatorio; chiude con il `verifier` e la ricevuta |
-| `swarm` | Matt `implement-spec` | Massimo 3 agenti alla volta; controllo dei file in comune; verifica finale |
-| `fix` | Matt `diagnosing-bugs`, pstack `principle-fix-root-causes` | Base copiata; aggiunti regola sulla causa radice, worktree e verifica finale |
-| `judge` | Matt `code-review`, Addy `code-review-and-quality`, pstack `blast-radius` | Assi separati di Matt, controlli di Addy, asse blast radius; profondità decisa dal rischio |
-| `ship` | Matt `pr`, pstack `opening-a-pr`, Matt `implement` (controlli veloci spesso, suite completa una volta), Addy `/ship` (fan-out parallelo) | Controlli bloccanti in ordine di costo, verifica una sola volta in fondo, formato PR unificato. Il `pr` di Matt cita [Dex Horthy, HumanLayer](https://github.com/humanlayer/skills) |
-| `release` | Addy `shipping-and-launch` | Da checklist generale a procedura con go/no-go umano, che usa il meccanismo della repo |
-| `setup` | Matt `setup-matt-pocock-skills`, Addy `constraint-driven-development` | Aggiunti rischio, dati sensibili e ricetta di verifica provata |
-| `ask` | Matt `ask-matt` | Stessa idea: riscritta sul flusso di questa repo; guarda anche lo stato della repo |
+| `spec` | Matt `to-spec` | Only what and why: technical decisions move to `slice`; acceptance criteria added |
+| `slice` | Matt `to-tickets`, Addy `planning-and-task-breakdown`, Matt `to-spec` | Always-present phase that combines design, risk, dependencies and slices; publishes tickets only when needed |
+| `build` | Matt `implement`, Addy `incremental-implementation` | Mandatory worktree; closes with the `verifier` and the receipt |
+| `swarm` | Matt `implement-spec` | At most 3 agents at a time; shared-file check; final verification |
+| `fix` | Matt `diagnosing-bugs`, pstack `principle-fix-root-causes` | Base copied; added root-cause rule, worktree and final verification |
+| `judge` | Matt `code-review`, Addy `code-review-and-quality`, pstack `blast-radius` | Matt's separate axes, Addy's checks, a blast-radius axis; depth set by risk |
+| `ship` | Matt `pr`, pstack `opening-a-pr`, Matt `implement` (fast checks often, full suite once), Addy `/ship` (parallel fan-out) | Blocking checks in cost order, verification once at the end, unified PR format. Matt's `pr` cites [Dex Horthy, HumanLayer](https://github.com/humanlayer/skills) |
+| `release` | Addy `shipping-and-launch` | From a general checklist to a procedure with a human go/no-go, using the repo's own mechanism |
+| `setup` | Matt `setup-matt-pocock-skills`, Addy `constraint-driven-development` | Added risk, sensitive data and a proven verification recipe |
+| `ask` | Matt `ask-matt` | Same idea: rewritten around this repo's flow; also looks at the repo state |
 
-## Nuove
+## New
 
-| Elemento | Spunti |
+| Item | Inspiration |
 |---|---|
 | `verify` | pstack `principle-prove-it-works`; Simon Willison, [Agentic manual testing](https://simonwillison.net/guides/agentic-engineering-patterns/agentic-manual-testing/) |
-| `risk` | Scala di certezza da pstack `blast-radius`; [Cortex, risk-based code review](https://www.cortex.io/post/risk-based-code-review) |
-| `explain` | Simon Willison, [Linear walkthroughs](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/) e [Interactive explanations](https://simonwillison.net/guides/agentic-engineering-patterns/interactive-explanations/); pstack `how` |
-| `ui` | Anthropic [`frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design) (Apache-2.0), solo come spunto; Matt `prototype`; [Emil Kowalski](https://github.com/emilkowalski/skills) (MIT), riferimento opzionale non incluso |
+| `risk` | Certainty ladder from pstack `blast-radius`; [Cortex, risk-based code review](https://www.cortex.io/post/risk-based-code-review) |
+| `explain` | Simon Willison, [Linear walkthroughs](https://simonwillison.net/guides/agentic-engineering-patterns/linear-walkthroughs/) and [Interactive explanations](https://simonwillison.net/guides/agentic-engineering-patterns/interactive-explanations/); pstack `how` |
+| `ui` | Anthropic [`frontend-design`](https://github.com/anthropics/skills/tree/main/skills/frontend-design) (Apache-2.0), inspiration only; Matt `prototype`; [Emil Kowalski](https://github.com/emilkowalski/skills) (MIT), optional reference not included |
 | `agents/reviewer.md`, `agents/verifier.md` | Simon Willison, [Subagents](https://simonwillison.net/guides/agentic-engineering-patterns/subagents/) |
-| `scripts/` | Nessuna fonte |
+| `scripts/` | No source |
 
-## Testi di licenza
+## Licence texts
 
 ```text
 MIT License

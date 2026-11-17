@@ -2,6 +2,19 @@
   "name": "agentic-engineering",
   "version": "0.3.2",
   "description": "Skills and subagents for engineering software with coding agents, installed into ~/.claude.",
+  "keywords": [
+    "claude-code",
+    "agent-skills",
+    "coding-agents",
+    "ai-agents",
+    "subagents",
+    "agentic-engineering",
+    "tdd",
+    "code-review",
+    "verification",
+    "git-worktrees",
+    "cli"
+  ],
   "type": "module",
   "bin": {
     "agentic-engineering": "bin/cli.mjs"
