@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 A discipline for bugs. Skip phases only when explicitly justified: a one-line bug with an obvious failing test still gets Phases 1, 5 and 7.
 
-Work in a linked worktree on a `fix/<topic>` branch, as `/build` describes.
+Work in a linked worktree on a `fix/<topic>` branch, issue number first when there is one, as `/build` describes.
 
 When exploring the codebase, read `GLOSSARY.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 

@@ -22,7 +22,7 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
 
 1. **Read the graph.** Read the spec and tickets. A blocking link needs a proven reason: two frontier tickets that edit the same file, or one consuming the other's output. Sequence on that evidence only; every other pair runs in parallel.
 2. **Explore once, if needed**, in the same turn as step 4's first implementer, never ahead of it. A mid-tier subagent saves notes outside the repo; implementers start from pointers and read the notes when they exist.
-3. **Create the integration branch** `feat/<topic>` from the default branch, in a worktree.
+3. **Create the integration branch** `feat/<n>-<topic>` from the default branch, in a worktree, where `<n>` is the spec's issue number, so `/ship #<n>` finds it.
 4. **Run the frontier.** At most two implementers at a time unless the user asks for more. Each is a fresh background subagent in its own worktree (`isolation: worktree` in Claude Code) on the mid-tier model, whatever model this session runs: a top-tier implementer costs about eight times as much and drains the usage limit mid-swarm. Rerun a ticket on the top-tier model only after a mid-tier implementer has failed it. Brief each through pointers to the spec, ticket and notes. The implementer:
    - confirms its worktree is based on the integration branch, and resets onto it if not;
    - follows the `tdd` skill, then runs the fast checks from `engineering.md` (format, lint, tests), with no `verify` and no receipt;

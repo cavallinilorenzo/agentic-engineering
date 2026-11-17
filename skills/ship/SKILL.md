@@ -1,7 +1,7 @@
 ---
 name: ship
-description: "Check the branch is ready, run the review its risk requires, and open a pull request in the standard format. Runs from any folder, given an issue, PR or branch, or nothing."
-argument-hint: "[issue | PR | branch]"
+description: "Check the branch is ready, run the review its risk requires, and open a pull request in the standard format. Runs from any folder, given an issue (or a branch or PR), or nothing."
+argument-hint: "[issue | branch | PR]"
 disable-model-invocation: true
 ---
 
@@ -15,7 +15,8 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
 
 The user may run `/ship` from the main checkout, on any branch. Pin the branch to ship first:
 
-- **An issue, PR or branch was named.** A PR gives its head branch. An issue gives the head branch of the open PR that closes it; failing that, the local branches and worktrees whose name carries its number (`git worktree list`, `git branch --list '*<n>*'`); failing that, the branches whose commits mention `#<n>`.
+- **An issue was named**, the usual case: the local branches and worktrees whose name carries its number, as `/build`, `/fix` and `/swarm` name them (`git worktree list`, `git branch --list '*<n>*'`); failing that, the branches whose commits mention `#<n>`.
+- **A branch or PR was named:** that branch, or the PR's head branch when shipping again after review.
 - **Nothing named, on a branch other than the default one:** that branch.
 - **Nothing named, on the default branch:** the local branches with commits the default branch lacks and no PR yet.
 
@@ -27,7 +28,7 @@ Then work inside that branch's worktree, leaving the folder the user started in 
 
 Work through these in order, cheapest first: each gate spares the dearer ones below it from running twice. A failing gate blocks the PR, except where it says otherwise. Fix what you can fix yourself and keep going. Ask the user only when a gate fails and cannot be fixed from the repo, then ask once, with your recommendation first. The repo answers the rest: the remote, the target repository (`gh repo view --json nameWithOwner`), the state of a worktree.
 
-1. **Branch.** Not the default branch. Named `<type>/<topic>`; if it has a `worktree-` name, rename it with `git branch -m`. Uncommitted changes on the branch are its own work: let gate 3 pass on them, then commit them.
+1. **Branch.** Not the default branch. Named `<type>/<topic>`, issue number first when there is one; if it has a `worktree-` name, rename it with `git branch -m`, keeping the number. Uncommitted changes on the branch are its own work: let gate 3 pass on them, then commit them.
 2. **One theme.** Every commit serves one purpose. Move unrelated changes to their own branch.
 3. **Fast checks.** Run the fast checks from `engineering.md` (format, lint, types, the tests of the touched files) and fix what fails. Seconds here save minutes at gate 5. Commit.
 4. **Judge.** Call the Skill tool with `risk` once, then with `judge`, and pass the level on. Fix `critical` and `required` findings without asking, along with the optional ones that are cheap, axis by axis as each report returns, so a slow axis never holds up the fixes of a fast one. Commit once, then run gate 3 again. Put what remains in the PR's **Risk** section; do not stop to present the findings first.
