@@ -1,6 +1,7 @@
 ---
 name: ship
-description: "Check the branch is ready, run the review its risk requires, and open a pull request in the standard format."
+description: "Check the branch is ready, run the review its risk requires, and open a pull request in the standard format. Runs from any folder, given an issue, PR or branch, or nothing."
+argument-hint: "[issue | PR | branch]"
 disable-model-invocation: true
 ---
 
@@ -9,6 +10,18 @@ disable-model-invocation: true
 Open a PR a stranger could trust. Merging stays with the human.
 
 Talk to the user in their language. Commits, PR text, issue text and code stay in English.
+
+## Find the work
+
+The user may run `/ship` from the main checkout, on any branch. Pin the branch to ship first:
+
+- **An issue, PR or branch was named.** A PR gives its head branch. An issue gives the head branch of the open PR that closes it; failing that, the local branches and worktrees whose name carries its number (`git worktree list`, `git branch --list '*<n>*'`); failing that, the branches whose commits mention `#<n>`.
+- **Nothing named, on a branch other than the default one:** that branch.
+- **Nothing named, on the default branch:** the local branches with commits the default branch lacks and no PR yet.
+
+One candidate goes ahead. Several: ask once, listing each with its last commit subject. None: stop and say what you searched.
+
+Then work inside that branch's worktree, leaving the folder the user started in as it was: enter it with the harness's tool for an existing worktree, or run every command from its folder. A branch without a worktree gets one: `git worktree add .claude/worktrees/<topic> <branch>`.
 
 ## Gates
 

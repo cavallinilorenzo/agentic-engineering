@@ -50,20 +50,31 @@ Not sure what to do now? Type **`/ask`**: it looks at the repo state and tells y
 npx agentic-engineering@latest
 ```
 
-In a terminal it asks two things: **where** to install and **which skills**.
+In a terminal it asks three things: **which tool**, **where** to install and **which skills**.
 
-- **Global** (`~/.claude`): the skills apply in every project.
-- **This repo only** (`.claude/` at the root of the current repo): they apply only there, and you can commit them.
+- **Tool:** Claude Code (`~/.claude`, which OpenCode reads too) or Antigravity (`~/.gemini/config`, skills only: see [Other tools](#other-tools)).
+- **Global** (`~/.claude` or `~/.gemini/config`): the skills apply in every project.
+- **This repo only** (`.claude/` or `.agents/` at the root of the current repo): they apply only there, and you can commit them.
 - **Which skills:** a numbered list; answer with numbers or ranges (`1,3,5-8`), or press Enter for all. Skills call each other (`/ship` uses `judge`, `verify`, `risk`), so if you remove one, the ones that name it will not fully work.
 
-Agents are always installed together with the skills. There is no need to clone the repo. Without prompts, for example in a script:
+For Claude Code, agents are always installed together with the skills. There is no need to clone the repo. Without prompts, for example in a script:
 
 ```bash
 npx agentic-engineering@latest --global --all               # everything, global
 npx agentic-engineering@latest --project --skills=spec,tdd  # only these, only in the repo
 npx agentic-engineering@latest --yes                        # global, all, no prompts
 npx agentic-engineering@latest --dry-run                    # show what would change, touch nothing
+npx agentic-engineering@latest --tool=antigravity --global --all  # everything, for Antigravity
 ```
+
+### Other tools
+
+The skills are plain `SKILL.md` folders, so any tool that reads that format can load them. Antigravity lists them in its Customizations panel and turns each into a `/<name>` command. What depends on Claude Code:
+
+- **`reviewer` and `verifier` agents:** Claude Code's format, so `--tool=antigravity` skips them. Without subagents, `judge` reviews one axis at a time and the skills run verification in the same session.
+- **Model per subagent:** the skills name tiers (_mid-tier_, _top-tier_) with the Claude Code value in brackets. A tool that cannot pick a model per subagent runs everything on the session's model.
+- **Worktree cleanup hook:** it lives in `~/.claude/settings.json`, so it is installed for Claude Code only.
+- **`disable-model-invocation`:** Antigravity's docs do not mention it, so commands such as `/ship` may also start on their own there.
 
 `--skills` gives the complete list: skills the installer previously put in the same scope that are not in the list are removed. The worktree cleanup script (step 3) is installed only globally.
 
@@ -230,7 +241,7 @@ These are called by the other commands. You can type them, but usually there is 
 
 | Situation | What you do |
 |---|---|
-| Work finished | `/ship`, then `/explain` in a clean session |
+| Work finished | `/ship #123` from any folder, even the main checkout: it finds the branch and its worktree. Then `/explain` in a clean session |
 | I have not read my PR's diff | `/explain`: it is the check designed for this |
 | Someone else's PR | `/explain 123`: an explanation and a review draft, which only you publish |
 | High-risk PR | `/explain` points out up to 3 critical spots to read with it |
@@ -284,7 +295,7 @@ With a single slice the plan is a comment on the issue. With several slices it c
 ### 3. Build
 
 - **`/build`** works on one ticket: creates the worktree, writes the test first, implements, commits and launches the `verifier`.
-- **`/swarm`** runs all the tickets of the spec following the blocks: independent ones in parallel, the others as soon as they are unblocked. One Sonnet subagent per ticket, each in its own worktree, towards a single integration branch and a single PR; one full verification at the end.
+- **`/swarm`** runs all the tickets of the spec following the blocks: independent ones in parallel, the others as soon as they are unblocked. One mid-tier subagent per ticket (Sonnet in Claude Code), each in its own worktree, towards a single integration branch and a single PR; one full verification at the end.
 - **`/fix`** first creates a command that "goes red" on that bug, then minimises, forms hypotheses, finds the root cause, writes the regression test and verifies.
 - **`/ui`** builds with a budgeted visual loop ([details](#interfaces)).
 

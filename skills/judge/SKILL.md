@@ -16,10 +16,10 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
 3. **Gather sources.**
    - **Standards**: `CODING_STANDARDS.md`, `CONTRIBUTING.md`, and any file documenting how code is written.
    - **Spec**: issues referenced by commits, a path from the user, or files matching the branch. With no spec, skip that axis and say so.
-4. **Dispatch in parallel**, one `reviewer` agent per axis, passing commands and paths as pointers:
+4. **Dispatch in parallel**, one `reviewer` agent per axis, passing commands and paths as pointers. Where the harness has no subagents, review one axis at a time from its brief alone, setting aside what earlier axes found.
    - **Standards**, always.
    - **Spec**, when a spec exists.
-   - **Blast radius**, at high risk, with `model: opus`.
+   - **Blast radius**, at high risk, on the harness's strongest model (`model: opus` in Claude Code).
 5. **Second opinion, optional.** At high risk, when `engineering.md` names a `second_opinion` command and the repo is not `sensitive`, run it on the diff and report it as its own axis.
 6. **Report** each axis under its own heading, findings neither merged nor reranked. End with the finding count per axis and the worst finding within each.
 

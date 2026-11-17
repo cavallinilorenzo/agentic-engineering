@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Installs this package's skills and agents into ~/.claude by copying them.
+// Installs this package's skills (and, for Claude Code, its agents) by copying them.
 // No dependencies. Usage: see HELP below.
 import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -7,20 +7,24 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const HELP = `agentic-engineering: skills and agents for Claude Code
+const HELP = `agentic-engineering: skills and agents for coding agents
 
 Usage:
   npx agentic-engineering@latest [install] [options]
-  npx agentic-engineering@latest uninstall [--global | --project] [--dry-run]
+  npx agentic-engineering@latest uninstall [--tool=...] [--global | --project] [--dry-run]
 
-  install     copy the chosen skills and the agents to <scope>/skills and
-              <scope>/agents (default; running it again updates).
-              In a terminal it asks for the scope and the skills.
+  install     copy the chosen skills (and, for Claude Code, the agents) to
+              <scope>/skills and <scope>/agents (default; running it again updates).
+              In a terminal it asks for the tool, the scope and the skills.
   uninstall   remove only what a previous install put there
 
 Options:
-  --global        install in ~/.claude (every project)
-  --project       install in .claude of the current repo (this project only)
+  --tool=claude       Claude Code, default (OpenCode reads it too):
+                      ~/.claude or .claude of the current repo
+  --tool=antigravity  Antigravity, skills only:
+                      ~/.gemini/config or .agents of the current repo
+  --global        install for every project
+  --project       install in the current repo only
   --skills=a,b    install only these skills; the others this tool installed
                   earlier in the same scope are removed
   --all           install every skill, without asking
@@ -29,7 +33,7 @@ Options:
                   backup (global scope only)
   --dry-run       show what would happen, touch nothing
 
-Anything replaced or moved goes to ~/.claude/backups/agentic-engineering-<timestamp>.`;
+Anything replaced or moved goes to <scope>/backups/agentic-engineering-<timestamp>.`;
 
 // Superseded by this set. Keep in step with LEGACY_* in scripts/install.sh (tests check it).
 export const LEGACY_SKILLS = "ask-matt code-review diagnosing-bugs grill-me grill-with-docs grilling implement implement-spec improve-codebase-architecture pr setup-matt-pocock-skills to-spec to-tickets wayfinder impeccable".split(" ");
@@ -39,12 +43,19 @@ const pkgRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const stamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
 
 const args = process.argv.slice(2);
-const flags = new Set(args.filter((a) => a.startsWith("-") && !a.startsWith("--skills=")));
+const flags = new Set(args.filter((a) => a.startsWith("-") && !a.startsWith("--skills=") && !a.startsWith("--tool=")));
 const skillsArg = args.find((a) => a.startsWith("--skills="));
+const toolArg = args.find((a) => a.startsWith("--tool="))?.slice("--tool=".length);
 const command = args.find((a) => !a.startsWith("-")) ?? "install";
 const dry = flags.has("--dry-run");
 const known = new Set(["--retire", "--dry-run", "--global", "--project", "--all", "--yes", "-y", "--help", "-h"]);
-if (flags.has("--help") || flags.has("-h") || ![...flags].every((f) => known.has(f)) || !["install", "uninstall"].includes(command) || (flags.has("--global") && flags.has("--project"))) {
+
+// Where each tool reads skills. Agents and the worktree hook use Claude Code's format only.
+const TOOLS = {
+  claude: { label: "Claude Code", hint: "~/.claude, also read by OpenCode", global: () => join(homedir(), ".claude"), project: () => join(projectRoot(), ".claude"), agents: true },
+  antigravity: { label: "Antigravity", hint: "~/.gemini/config, skills only", global: () => join(homedir(), ".gemini", "config"), project: () => join(projectRoot(), ".agents"), agents: false },
+};
+if (flags.has("--help") || flags.has("-h") || ![...flags].every((f) => known.has(f)) || !["install", "uninstall"].includes(command) || (flags.has("--global") && flags.has("--project")) || (toolArg !== undefined && !TOOLS[toolArg])) {
   console.error(HELP);
   process.exit(flags.has("--help") || flags.has("-h") ? 0 : 2);
 }
@@ -70,25 +81,36 @@ const BANNER = String.raw`
 ██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║   ██║╚██████╗
 ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚═╝ ╚═════╝`;
 if (ui && command === "install") {
-  console.log(`\x1b[36m${BANNER}\x1b[0m\n\x1b[2m  engineering: skills and agents for Claude Code\x1b[0m\n`);
+  console.log(`\x1b[36m${BANNER}\x1b[0m\n\x1b[2m  engineering: skills and agents for coding agents\x1b[0m\n`);
   ui.intro("agentic-engineering");
 }
 
-// Scope: ~/.claude for every project, or .claude of the current repo.
+// Tool: which harness reads the skills.
+let tool = toolArg ?? null;
+if (!tool && interactive) {
+  tool = ask(await ui.select({
+    message: "Which tool do you use?",
+    options: Object.entries(TOOLS).map(([value, t]) => ({ value, label: t.label, hint: t.hint })),
+  }));
+}
+tool ??= "claude";
+const T = TOOLS[tool];
+
+// Scope: the tool's home folder for every project, or its folder in the current repo.
 let scope = flags.has("--global") ? "global" : flags.has("--project") ? "project" : null;
 if (!scope && interactive) {
   scope = ask(await ui.select({
     message: "Where do you want to install?",
     options: [
-      { value: "global", label: "Global", hint: "~/.claude, every project" },
-      { value: "project", label: "This repo only", hint: join(projectRoot(), ".claude") },
+      { value: "global", label: "Global", hint: `${tilde(T.global())}, every project` },
+      { value: "project", label: "This repo only", hint: T.project() },
     ],
   }));
 }
 scope ??= "global";
-const claude = scope === "project" ? join(projectRoot(), ".claude") : join(homedir(), ".claude");
-const manifestPath = join(claude, "agentic-engineering.json");
-const backup = join(claude, "backups", `agentic-engineering-${stamp}`);
+const root = scope === "project" ? T.project() : T.global();
+const manifestPath = join(root, "agentic-engineering.json");
+const backup = join(root, "backups", `agentic-engineering-${stamp}`);
 
 const exists = (p) => existsSync(p) || isLink(p);
 const isLink = (p) => { try { return lstatSync(p).isSymbolicLink(); } catch { return false; } };
@@ -156,20 +178,20 @@ function blurb(name) {
 
 async function install() {
   const old = readManifest();
-  if (flags.has("--retire") && scope === "global") {
-    for (const n of LEGACY_SKILLS) if (exists(join(claude, "skills", n))) moveAway(join(claude, "skills", n), "skills");
-    for (const n of LEGACY_AGENTS) if (exists(join(claude, "agents", n))) moveAway(join(claude, "agents", n), "agents");
+  if (flags.has("--retire") && scope === "global" && tool === "claude") {
+    for (const n of LEGACY_SKILLS) if (exists(join(root, "skills", n))) moveAway(join(root, "skills", n), "skills");
+    for (const n of LEGACY_AGENTS) if (exists(join(root, "agents", n))) moveAway(join(root, "agents", n), "agents");
   }
   const skills = await chooseSkills(names("skills", true), old);
-  const agents = names("agents", false);
+  const agents = T.agents ? names("agents", false) : [];
   if (!skills.length) { console.error("No skill chosen, nothing to do."); process.exit(2); }
-  if (ui) ui.log.info(`${dry ? "Would install" : "Installing"} ${skills.length} skills and ${agents.length} agents in ${claude}`);
-  else console.log(`\nInstalling ${skills.length} skills and ${agents.length} agents in ${claude}\n`);
-  for (const n of skills) put(join(pkgRoot, "skills", n), join(claude, "skills", n), "skills", old.skills.includes(n));
-  for (const n of agents) put(join(pkgRoot, "agents", n), join(claude, "agents", n), "agents", old.agents.includes(n));
-  // Stable path for the SessionStart hook described in the README. Global only: the hook lives in ~/.claude/settings.json.
-  if (scope === "global") {
-    const script = join(claude, "agentic-engineering", "clean-worktrees.sh");
+  if (ui) ui.log.info(`${dry ? "Would install" : "Installing"} ${skills.length} skills and ${agents.length} agents in ${root}`);
+  else console.log(`\nInstalling ${skills.length} skills and ${agents.length} agents in ${root}\n`);
+  for (const n of skills) put(join(pkgRoot, "skills", n), join(root, "skills", n), "skills", old.skills.includes(n));
+  for (const n of agents) put(join(pkgRoot, "agents", n), join(root, "agents", n), "agents", old.agents.includes(n));
+  // Stable path for the SessionStart hook described in the README. Claude Code, global only: the hook lives in ~/.claude/settings.json.
+  if (scope === "global" && tool === "claude") {
+    const script = join(root, "agentic-engineering", "clean-worktrees.sh");
     say(`${dry ? "would copy" : "copied"} ${script}`);
     if (!dry) {
       mkdirSync(dirname(script), { recursive: true });
@@ -177,16 +199,16 @@ async function install() {
     }
   }
   // Drop what an earlier version installed and this one no longer ships.
-  for (const n of old.skills.filter((x) => !skills.includes(x))) remove(join(claude, "skills", n));
-  for (const n of old.agents.filter((x) => !agents.includes(x))) remove(join(claude, "agents", n));
+  for (const n of old.skills.filter((x) => !skills.includes(x))) remove(join(root, "skills", n));
+  for (const n of old.agents.filter((x) => !agents.includes(x))) remove(join(root, "agents", n));
   if (!dry) {
     const { version } = JSON.parse(readFileSync(join(pkgRoot, "package.json"), "utf8"));
-    mkdirSync(claude, { recursive: true });
+    mkdirSync(root, { recursive: true });
     writeFileSync(manifestPath, JSON.stringify({ version, skills, agents }, null, 2) + "\n");
   }
-  const done = dry ? "Nothing changed. Run without --dry-run to do this." : `Done. Open a new Claude Code session${scope === "global" ? ", then run /setup in each repo" : ""}.`;
+  const done = dry ? "Nothing changed. Run without --dry-run to do this." : `Done. Open a new ${T.label} session${scope === "global" ? ", then run /setup in each repo" : ""}.`;
   if (ui) {
-    lines.unshift(`Skills  ${skills.join(", ")}`, `Agents  ${agents.map((x) => x.replace(/\.md$/, "")).join(", ")}`, `Where   ${tilde(claude)}`, ...(lines.length ? [""] : []));
+    lines.unshift(`Skills  ${skills.join(", ")}`, ...(agents.length ? [`Agents  ${agents.map((x) => x.replace(/\.md$/, "")).join(", ")}`] : []), `Where   ${tilde(root)}`, ...(lines.length ? [""] : []));
     flush(dry ? "Would install" : "Installed"); ui.outro(done); } else console.log(`\n${done}`);
 }
 
@@ -202,9 +224,9 @@ function remove(path) {
 
 function uninstall() {
   const m = readManifest();
-  for (const n of m.skills) remove(join(claude, "skills", n));
-  for (const n of m.agents) remove(join(claude, "agents", n));
-  if (scope === "global") remove(join(claude, "agentic-engineering"));
+  for (const n of m.skills) remove(join(root, "skills", n));
+  for (const n of m.agents) remove(join(root, "agents", n));
+  if (scope === "global" && tool === "claude") remove(join(root, "agentic-engineering"));
   remove(manifestPath);
 }
 
