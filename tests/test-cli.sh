@@ -64,6 +64,23 @@ check "narrowing removes the skill dropped" '[ ! -e "$P/skills/tdd" ] && [ -f "$
 prun uninstall --project
 check "project uninstall removes ours" '[ ! -e "$P/skills/spec" ] && [ ! -e "$P/agentic-engineering.json" ]'
 
+# Antigravity: skills only, in its own folders, Claude Code's untouched.
+# shellcheck disable=SC2034  # read by the check strings below, which are eval'd
+G="$T/home/.gemini/config"
+run --tool=antigravity --global
+check "antigravity installs skills globally" '[ -f "$G/skills/spec/SKILL.md" ]'
+check "antigravity installs no agents" '[ ! -e "$G/agents" ]'
+check "antigravity has no worktree script" '[ ! -e "$G/agentic-engineering" ]'
+check "antigravity writes its own manifest" 'grep -q "\"spec\"" "$G/agentic-engineering.json"'
+check "antigravity leaves Claude Code alone" '[ ! -e "$H/skills/spec" ]'
+run uninstall --tool=antigravity --global
+check "antigravity uninstall removes ours" '[ ! -e "$G/skills/spec" ] && [ ! -e "$G/agentic-engineering.json" ]'
+prun --tool=antigravity --project --skills=spec
+check "antigravity project installs in .agents" '[ -f "$T/proj/.agents/skills/spec/SKILL.md" ]'
+prun uninstall --tool=antigravity --project
+check "antigravity project uninstall removes ours" '[ ! -e "$T/proj/.agents/skills/spec" ]'
+check "unknown tool fails" '! HOME="$T/home" node "$ROOT/bin/cli.mjs" --tool=nope >/dev/null 2>&1'
+
 # The legacy lists live in two places; they must match.
 for var in LEGACY_SKILLS LEGACY_AGENTS; do
   sh_list="$(grep "^$var=" "$ROOT/scripts/install.sh" | sed 's/^[A-Z_]*="//; s/"$//')"

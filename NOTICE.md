@@ -20,13 +20,8 @@ This project is licensed under the MIT licence (see [LICENSE](LICENSE)). It reus
 | Skill | Origin | What changes |
 |---|---|---|
 | `grill` | Matt `productivity/grilling` | Name |
-| `fog` | Matt `engineering/wayfinder` | Name; references to `grill` and `/setup` |
-| `arch` | Matt `engineering/improve-codebase-architecture` | Name; reference to `grill` |
-| `triage` | Matt `engineering/triage` | Reference to `/setup` |
-| `retro` | Matt `engineering/retro` | None |
 | `handoff` | Matt `productivity/handoff` | None |
 | `tdd` | Matt `engineering/tdd` | Reference to `judge` |
-| `prototype` | Matt `engineering/prototype` | None |
 | `research` | Matt `engineering/research` | None |
 | `domain-modeling` | Matt `engineering/domain-modeling` | None |
 | `codebase-design` | Matt `engineering/codebase-design` | None |
@@ -37,7 +32,7 @@ Files copied inside reworked skills:
 | File | Origin |
 |---|---|
 | `skills/ask/PHASE-BOUNDARIES.md` | Matt `engineering/ask-matt` |
-| `skills/setup/domain.md`, `issue-tracker-*.md`, `triage-labels.md` | Matt `engineering/setup-matt-pocock-skills` (references to `/fog`, `/slice` and `/arch`) |
+| `skills/setup/domain.md`, `issue-tracker-*.md`, `triage-labels.md` | Matt `engineering/setup-matt-pocock-skills` (references to `/fog` and `/slice`; the external-PR triage sections removed) |
 | `skills/ui/references/web-interface-guidelines.md` | Vercel `command.md` |
 
 ## Reworked
@@ -47,10 +42,12 @@ Files copied inside reworked skills:
 | `spec` | Matt `to-spec` | Only what and why: technical decisions move to `slice`; acceptance criteria added |
 | `slice` | Matt `to-tickets`, Addy `planning-and-task-breakdown`, Matt `to-spec` | Always-present phase that combines design, risk, dependencies and slices; publishes tickets only when needed |
 | `build` | Matt `implement`, Addy `incremental-implementation` | Mandatory worktree; closes with the `verifier` and the receipt |
-| `swarm` | Matt `implement-spec` | At most 3 agents at a time; shared-file check; final verification |
+| `fog` | Matt `engineering/wayfinder` | Name; references to `grill` and `/setup`; a ticket's resolution is written as soon as the user answers |
+| `prototype` | Matt `engineering/prototype` | The agent starts the prototype and hands over its URL or path |
+| `swarm` | Matt `implement-spec` | At most 2 agents at a time; Sonnet implementers; shared-file check; one final verification |
 | `fix` | Matt `diagnosing-bugs`, pstack `principle-fix-root-causes` | Base copied; added root-cause rule, worktree and final verification |
 | `judge` | Matt `code-review`, Addy `code-review-and-quality`, pstack `blast-radius` | Matt's separate axes, Addy's checks, a blast-radius axis; depth set by risk |
-| `ship` | Matt `pr`, pstack `opening-a-pr`, Matt `implement` (fast checks often, full suite once), Addy `/ship` (parallel fan-out) | Blocking checks in cost order, verification once at the end, unified PR format. Matt's `pr` cites [Dex Horthy, HumanLayer](https://github.com/humanlayer/skills) |
+| `ship` | Matt `pr`, pstack `opening-a-pr`, Matt `implement` (fast checks often, full suite once), Addy `/ship` (parallel fan-out) | Blocking checks in cost order, verification once at the end, unified PR format, waits for green CI. Matt's `pr` cites [Dex Horthy, HumanLayer](https://github.com/humanlayer/skills) |
 | `release` | Addy `shipping-and-launch` | From a general checklist to a procedure with a human go/no-go, using the repo's own mechanism |
 | `setup` | Matt `setup-matt-pocock-skills`, Addy `constraint-driven-development` | Added risk, sensitive data and a proven verification recipe |
 | `ask` | Matt `ask-matt` | Same idea: rewritten around this repo's flow; also looks at the repo state |

@@ -18,7 +18,7 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
    git fetch origin
    git worktree add -b <type>/<topic> .claude/worktrees/<topic> origin/<default-branch>
    ```
-   Then work from that folder and run the `setup` line of `docs/agents/engineering.md` to prepare dependencies. `<type>` is `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `perf` or `ci`.
+   Then work from that folder and run the `setup` line of `docs/agents/engineering.md` to prepare dependencies. `<type>` is `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `perf` or `ci`. When the work comes from an issue, `<topic>` starts with its number (`feat/123-model-picker`; with the harness's tool, name the worktree `123-model-picker`): that number is how `/ship #123` finds the branch from any folder.
 3. **Build test-first.** Call the Skill tool with `tdd`, using the seams the plan agreed. Typecheck and run single test files as you go. Run the full suite once at the end. For interface work, use the `ui` skill.
 4. **Record docs.** If the ticket has `## Docs to record`, write that ADR and glossary text into the repo in this branch.
 5. **Commit** small logical steps with Conventional Commit messages in English.

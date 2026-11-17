@@ -35,9 +35,6 @@ Done when the user has one next action, or their question about the workflow is 
 | Ship | `/ship` | Open the PR |
 | | `/release` | Deliver a version to people |
 | Repo | `/setup` | Once per repo, before anything else |
-| Upkeep | `/triage` | Issues arrived that you did not write |
-| | `/arch` | A spare moment to deepen the codebase's modules |
-| | `/retro` | A session went badly: improve the environment |
 | Context | `/handoff` | Work moves to another harness, folder or person |
 | Help | `/ask` | You do not know what comes next |
 
@@ -50,7 +47,6 @@ Internal, called by the others but also typeable: `tdd`, `risk`, `research`, `pr
 - **Feature:** `/grill` → `/spec` → `/slice` → `/build` per ticket → `/ship` → `/explain`
 - **Fog:** `/fog` over many sessions → `/spec` → `/slice` → `/build` or `/swarm`
 - **Someone else's PR:** `/explain <number>`
-- **Issues piling up:** `/triage` → `/build`
 - **New repo:** `/setup` first
 
 ## Rules of thumb

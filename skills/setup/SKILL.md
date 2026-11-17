@@ -37,6 +37,8 @@ Done when every command in the recipe has run, the files are written, and the us
 
 Workflow: see `/ask`. Before verifying or reviewing, read `docs/agents/engineering.md`.
 
+In a worktree, run plain commands from its folder, one per call, and change files with the edit tools: the harness refuses what it cannot prove stays inside the worktree, such as `cd`, `git -C`, chained or heredoc scripts and `sed -i`.
+
 - Issue tracker: <one line>. See `docs/agents/issue-tracker.md`.
 - Triage labels: <one line>. See `docs/agents/triage-labels.md`.
 - Domain docs: <one line>. See `docs/agents/domain.md`.

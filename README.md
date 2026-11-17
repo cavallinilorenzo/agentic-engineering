@@ -50,20 +50,31 @@ Not sure what to do now? Type **`/ask`**: it looks at the repo state and tells y
 npx agentic-engineering@latest
 ```
 
-In a terminal it asks two things: **where** to install and **which skills**.
+In a terminal it asks three things: **which tool**, **where** to install and **which skills**.
 
-- **Global** (`~/.claude`): the skills apply in every project.
-- **This repo only** (`.claude/` at the root of the current repo): they apply only there, and you can commit them.
+- **Tool:** Claude Code (`~/.claude`, which OpenCode reads too) or Antigravity (`~/.gemini/config`, skills only: see [Other tools](#other-tools)).
+- **Global** (`~/.claude` or `~/.gemini/config`): the skills apply in every project.
+- **This repo only** (`.claude/` or `.agents/` at the root of the current repo): they apply only there, and you can commit them.
 - **Which skills:** a numbered list; answer with numbers or ranges (`1,3,5-8`), or press Enter for all. Skills call each other (`/ship` uses `judge`, `verify`, `risk`), so if you remove one, the ones that name it will not fully work.
 
-Agents are always installed together with the skills. There is no need to clone the repo. Without prompts, for example in a script:
+For Claude Code, agents are always installed together with the skills. There is no need to clone the repo. Without prompts, for example in a script:
 
 ```bash
 npx agentic-engineering@latest --global --all               # everything, global
 npx agentic-engineering@latest --project --skills=spec,tdd  # only these, only in the repo
 npx agentic-engineering@latest --yes                        # global, all, no prompts
 npx agentic-engineering@latest --dry-run                    # show what would change, touch nothing
+npx agentic-engineering@latest --tool=antigravity --global --all  # everything, for Antigravity
 ```
+
+### Other tools
+
+The skills are plain `SKILL.md` folders, so any tool that reads that format can load them. Antigravity lists them in its Customizations panel and turns each into a `/<name>` command. What depends on Claude Code:
+
+- **`reviewer` and `verifier` agents:** Claude Code's format, so `--tool=antigravity` skips them. Without subagents, `judge` reviews one axis at a time and the skills run verification in the same session.
+- **Model per subagent:** the skills name tiers (_mid-tier_, _top-tier_) with the Claude Code value in brackets. A tool that cannot pick a model per subagent runs everything on the session's model.
+- **Worktree cleanup hook:** it lives in `~/.claude/settings.json`, so it is installed for Claude Code only.
+- **`disable-model-invocation`:** Antigravity's docs do not mention it, so commands such as `/ship` may also start on their own there.
 
 `--skills` gives the complete list: skills the installer previously put in the same scope that are not in the list are removed. The worktree cleanup script (step 3) is installed only globally.
 
@@ -163,9 +174,6 @@ npx skills add emilkowalski/skills --skill emil-design-eng
 | **Ship** | `/ship` | Checks everything and opens the PR |
 | | `/release` | Delivers a version to people |
 | **Repo** | `/setup` | Prepares a repo, once |
-| **Maintenance** | `/triage` | Issues arrived that you did not write |
-| | `/arch` | You have a free moment to improve the modules |
-| | `/retro` | A session went badly: improve the environment |
 | **Context** | `/handoff` | The work moves to another tool, folder or person |
 | **Help** | `/ask` | You do not know what comes next |
 
@@ -177,9 +185,9 @@ These are called by the other commands. You can type them, but usually there is 
 | `risk` | Risk levels and certainty ladder | `/slice`, `/verify`, `/judge`, `/explain` |
 | `research` | A background agent looks up facts in primary sources and saves them with citations | `/slice`, `/fog` |
 | `prototype` | Throwaway code to answer a question about logic or looks | `/slice`, `/fog`, `/ui` |
-| `domain-modeling` | Keeps the glossary and ADRs up to date | `/slice`, `/fog`, `/arch` |
-| `codebase-design` | Vocabulary for designing deep modules | `/slice`, `/arch`, `tdd` |
-| `writing-for-agents` | Rules for writing documents for agents | `/retro`, and whoever edits these skills |
+| `domain-modeling` | Keeps the glossary and ADRs up to date | `/slice`, `/fog` |
+| `codebase-design` | Vocabulary for designing deep modules | `/slice`, `tdd` |
+| `writing-for-agents` | Rules for writing documents for agents | Whoever edits these skills |
 
 ## What to do in each situation
 
@@ -233,14 +241,14 @@ These are called by the other commands. You can type them, but usually there is 
 
 | Situation | What you do |
 |---|---|
-| Work finished | `/ship`, then `/explain` in a clean session |
+| Work finished | `/ship #123` from any folder, even the main checkout: it finds the branch and its worktree. Then `/explain` in a clean session |
 | I have not read my PR's diff | `/explain`: it is the check designed for this |
 | Someone else's PR | `/explain 123`: an explanation and a review draft, which only you publish |
 | High-risk PR | `/explain` points out up to 3 critical spots to read with it |
 | The receipt is for an old commit | `/ship` rejects it and reruns verification; `/explain` flags it as stale |
 | PR with several themes together | `/ship` blocks it: unrelated themes go on another branch |
 | Review comments to address | Reopen the session on the branch, fix, `/ship` reverifies |
-| Red CI after opening | Fix on the branch; every new commit invalidates the receipt |
+| Red CI after opening | `/ship` watches the checks and fixes what the branch broke; the rest it reports with the job link |
 | I only want an opinion on a branch | `/judge` |
 
 ### After the merge
@@ -263,11 +271,8 @@ These are called by the other commands. You can type them, but usually there is 
 | Work finished, moving to an unrelated one | `/clear` |
 | I ran out of Claude plan limits | `/handoff`, then restart with OpenCode Go, only on non-sensitive repos |
 | Handing the work to a colleague | `/handoff` |
-| Issues and reports arrived | `/triage`, then `/build` on the ready ones |
-| The agent made a predictable mistake | `/retro`: a mechanical mistake becomes an automatic check, a judgement one becomes a rule |
-| I have free time for quality | `/arch`: proposes the modules to deepen and you start from `/grill` |
 | Repo with client data | In `/setup` flag `sensitive: yes`: no models from other providers |
-| A skill does not do what it should | `/retro`, then edit the skill in this repo |
+| A skill does not do what it should | Edit the skill in this repo with `writing-for-agents` |
 
 ## The flow, phase by phase
 
@@ -290,7 +295,7 @@ With a single slice the plan is a comment on the issue. With several slices it c
 ### 3. Build
 
 - **`/build`** works on one ticket: creates the worktree, writes the test first, implements, commits and launches the `verifier`.
-- **`/swarm`** runs all the tickets of the spec following the blocks: independent ones in parallel, the others as soon as they are unblocked. One subagent per ticket, each in its own worktree, towards a single integration branch and a single PR.
+- **`/swarm`** runs all the tickets of the spec following the blocks: independent ones in parallel, the others as soon as they are unblocked. One mid-tier subagent per ticket (Sonnet in Claude Code), each in its own worktree, towards a single integration branch and a single PR; one full verification at the end.
 - **`/fix`** first creates a command that "goes red" on that bug, then minimises, forms hypotheses, finds the root cause, writes the regression test and verifies.
 - **`/ui`** builds with a budgeted visual loop ([details](#interfaces)).
 
@@ -309,8 +314,8 @@ They are two different things:
 
 ### 6. Ship: delivering
 
-- **`/ship`** checks the branch, single theme, size, receipt and review, then opens the PR in the [standard format](#pull-request-standards). You do the merge.
-- **`/release`** delivers a version: lists the changes, checks it is ready, writes the rollback plan and starts only with your approval.
+- **`/ship`** checks the branch, single theme, size, receipt and review, then opens the PR in the [standard format](#pull-request-standards) and stays until CI is green. You do the merge.
+- **`/release`** delivers a version: lists the changes, checks it is ready, writes the rollback plan and starts only with your approval. It also starts on its own when you ask to release, publish or tag a version.
 
 ## Risk levels
 
@@ -399,7 +404,7 @@ What it includes and what it leaves out.
 Before and after, only if the UI changes.
 ```
 
-**Screenshots:** GitHub has no public API for attaching images, so `/ship` uploads them to a prerelease tagged `pr-assets-<number>`, which does not trigger workflows tied to `v*` tags. They show **always and only fake data**: in a public repo an image exposes data just like code does.
+**Screenshots:** GitHub has no public API for attaching images, so `/ship` gives you the local paths and you drag them into the PR. It creates no release, tag or branch to host them. They show **always and only fake data**: in a public repo an image exposes data just like code does.
 
 An image costs about 1,500-2,700 tokens only when the model opens it. Saving and attaching it is free.
 
@@ -512,7 +517,7 @@ The deterministic parts have tests: installation, worktree cleanup, skill struct
 |---|---|
 | The full flow, from `/spec` to `/explain` | Never run end to end |
 | `/slice` and `/verify` replacing Claude Code's same-named commands | Documented for the local terminal, not for other surfaces |
-| Screenshot upload to a prerelease | Commands not yet run on a real PR |
+| `/ship` watching CI and fixing red checks | Not yet run on a real PR |
 | The `/ui` budget | Tokens are an estimate |
 | `second_opinion` with OpenCode Go | The exact command is still to be defined |
 | Subagents on OpenCode | The skills work, but `reviewer` and `verifier` use the Claude Code format |
