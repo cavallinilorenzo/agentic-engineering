@@ -1,5 +1,9 @@
 # Agentic Engineering
 
+[![CI](https://github.com/cavallinilorenzo/agentic-engineering/actions/workflows/ci.yml/badge.svg)](https://github.com/cavallinilorenzo/agentic-engineering/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/agentic-engineering)](https://www.npmjs.com/package/agentic-engineering)
+[![licence: MIT](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
+
 My set of skills and subagents for doing software engineering with coding agents.
 
 They are short words to type in Claude Code. Each word says which phase of the work you are in, the agent does the rest, and no work is declared done without proof.
@@ -32,6 +36,7 @@ Not sure what to do now? Type **`/ask`**: it looks at the repo state and tells y
 - [Models and costs](#models-and-costs)
 - [Interfaces](#interfaces)
 - [How the repo is laid out](#how-the-repo-is-laid-out)
+- [Updating and releasing](#updating-and-releasing)
 - [What still needs testing](#what-still-needs-testing)
 
 ## Principles
@@ -80,7 +85,7 @@ The skills are plain `SKILL.md` folders, so any tool that reads that format can 
 
 If a name is already taken, the old item is moved to `backups/agentic-engineering-<date>/` inside `.claude`. Skills stay `/spec`, `/slice`, etc., with no plugin prefix.
 
-Before publication on npm, or to try a branch, you can use GitHub directly:
+To try an unreleased branch, use GitHub directly:
 
 ```bash
 npx github:cavallinilorenzo/agentic-engineering
@@ -499,15 +504,22 @@ scripts/install.sh        symlink installer, for people developing
 scripts/clean-worktrees.sh  worktree cleanup after merge
 tests/                    checks on skills, installation and cleanup
 NOTICE.md                 origin and licence of every skill
+.github/                  CI, release workflow, issue and PR templates
 ```
 
 **Where each skill comes from:** [NOTICE.md](NOTICE.md) states for each one whether it is copied, reworked or new, with commit and licence.
 
 In short: the base is [Matt Pocock](https://github.com/mattpocock/skills), the six-phase cycle comes from [Addy Osmani](https://github.com/addyosmani/agent-skills), some ideas from [pstack](https://github.com/cursor/plugins/tree/main/pstack), the UI guidelines from [Vercel](https://github.com/vercel-labs/web-interface-guidelines).
 
-**Editing the skills:** run `bash tests/run.sh` before every commit. It checks names, cross-references, citations and the dangerous cleanup cases.
+**Editing the skills:** run `npm test` before every commit. It checks names, cross-references, citations and the dangerous cleanup cases.
 
 **Updating from the sources:** compare the source with the commit in `NOTICE.md`, bring over what is needed and update the commit. There is no automatic sync, by choice.
+
+## Updating and releasing
+
+Update your installed copy by running the installer again: `npx agentic-engineering@latest`.
+
+`main` is protected: every change goes through a pull request with passing checks (ShellCheck, tests, a real install from the packed tarball, secret scan), and merged branches are deleted. Merging a PR that bumps the version in `package.json` publishes it to npm with provenance and creates the GitHub release. Details in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## What still needs testing
 
