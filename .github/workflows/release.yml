@@ -1,0 +1,61 @@
+name: Release
+
+# Publishes to npm when package.json carries a version that npm does not have yet.
+# To release: bump the version in a PR (npm version <patch|minor|major> --no-git-tag-version)
+# and merge it. Users on `npx agentic-engineering@latest` get it on their next run.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write # tag and GitHub release
+  id-token: write # npm trusted publishing and provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - name: Is this version already published?
+        id: version
+        run: |
+          name="$(node -p "require('./package.json').name")"
+          version="$(node -p "require('./package.json').version")"
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already on npm: nothing to do."
+            echo "publish=false" >>"$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >>"$GITHUB_OUTPUT"
+          fi
+      - name: Install tools
+        if: steps.version.outputs.publish == 'true'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lsof
+      - name: Test
+        if: steps.version.outputs.publish == 'true'
+        run: |
+          npm ci
+          npm test
+      - name: Publish to npm
+        if: steps.version.outputs.publish == 'true'
+        run: |
+          # Trusted publishing needs npm >= 11.5.1; Node 22 ships an older one.
+          npm install -g npm@latest
+          npm publish --provenance --access public
+      - name: Tag and create the GitHub release
+        if: steps.version.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "v$VERSION" --target "$GITHUB_SHA" --title "v$VERSION" --generate-notes

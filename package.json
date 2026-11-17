@@ -15,6 +15,10 @@
     "git-worktrees",
     "cli"
   ],
+  "homepage": "https://github.com/cavallinilorenzo/agentic-engineering#readme",
+  "bugs": {
+    "url": "https://github.com/cavallinilorenzo/agentic-engineering/issues"
+  },
   "type": "module",
   "bin": {
     "agentic-engineering": "bin/cli.mjs"
@@ -26,12 +30,20 @@
     "scripts/clean-worktrees.sh",
     "NOTICE.md"
   ],
+  "scripts": {
+    "test": "bash tests/run.sh",
+    "lint": "shellcheck -S warning scripts/*.sh tests/*.sh"
+  },
   "engines": {
     "node": ">=18"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cavallinilorenzo/agentic-engineering.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "license": "MIT",
   "dependencies": {
