@@ -31,14 +31,10 @@ Work through these in order, cheapest first: each gate spares the dearer ones be
 2. **Title:** Conventional Commits, `type(scope): imperative subject`, at most 72 characters, no trailing period.
 3. **Body:** the template below. Use `Closes #<n>` when the work comes from an issue.
 4. `gh pr create`, marked ready.
-5. **Screenshots**, when the UI changed. GitHub has no public API for attachments, so upload to a prerelease whose tag cannot trigger a release:
-   ```bash
-   gh release create "pr-assets-<pr>" <files> --prerelease --target "$(git rev-parse HEAD)" --title "PR <pr> assets" --notes "Screenshots for PR <pr>."
-   gh release view "pr-assets-<pr>" --json assets --jq '.assets[].url'
-   ```
-   Embed the URLs with `gh pr edit --body-file`. Confirm that each image shows synthetic data first.
+5. **Screenshots**, when the UI changed. GitHub has no public upload API, so give the user the local paths to drag into the PR description, after confirming each image shows synthetic data. Host them nowhere yourself: a release, tag or branch made for them publishes something the repo's rules may reserve for humans.
+6. **Watch CI.** Start `gh pr checks <pr> --watch --fail-fast` in the background, with `Monitor` where the harness has it, and resume when it ends. On a failure the branch caused, read the failing log (`gh run view <run-id> --log-failed`), fix it, run gate 3, commit, push and watch again. Run gate 5 again only when the fix changed behaviour, not for a fix confined to a test, a config or a workflow file. A failure the branch cannot cause (an outage, a missing secret, a flaky job that passes on rerun) goes to the user with the job link.
 
-Done when the PR URL is shown and its checks are running. Finish by telling the user the next step: `/explain`. Once the PR is merged, the worktree cleaner removes its worktree and local branch.
+Done when the PR URL is shown and every required check is green, or a failure the branch cannot fix is reported with its job link. Finish by telling the user the next step: `/explain`. Once the PR is merged, the worktree cleaner removes its worktree and local branch.
 
 ## Body template
 

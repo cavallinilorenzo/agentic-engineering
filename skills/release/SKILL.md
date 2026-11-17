@@ -1,7 +1,6 @@
 ---
 name: release
-description: "Decide go or no-go for a production release, with a rollback plan, then run it through the repo's release mechanism."
-disable-model-invocation: true
+description: "Release a version: go or no-go with a rollback plan, then the repo's release mechanism. Use when the user asks to release, publish, tag or bump a version."
 ---
 
 # Release
@@ -23,4 +22,4 @@ Merging delivers code to the repo; a release delivers it to people. Publishing i
 6. **Run the mechanism**, one step at a time, stage by stage where the repo supports staging.
 7. **Check after.** Run the smoke test against the released artifact, and read the error signal.
 
-Done when the smoke test has passed and the user has the result, or the rollback has run and the failure is reported. Run `/retro` when something went wrong.
+Done when the smoke test has passed and the user has the result, or the rollback has run and the failure is reported.
