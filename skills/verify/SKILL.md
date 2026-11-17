@@ -17,7 +17,7 @@ Talk to the user in their language. Commits, PR text, issue text and code stay i
 4. **Run the commands** the recipe names, fresh, at the pinned commit. Keep each command's exit status and the one line that summarises it.
 5. **Exercise the behaviour.** Drive every criterion through the real artifact: dev server, CLI, app. Climb the certainty ladder as far as the risk level demands. Turn a bug found here into a failing test, then fix it and restart from step 1.
 6. **Capture screenshots** when the change is visual (see below).
-7. **Write the receipt** to `$(git rev-parse --git-path verification-receipt.md)`, which stays out of the diff.
+7. **Write the receipt** to `$(git rev-parse --git-path verification-receipt.md)`, which stays out of the diff. In a linked worktree that path lies in the main checkout's `.git`, where an isolated session's edit tools refuse to write: write the receipt to a temporary file, then `cp` it there.
 
 Done when every criterion has an observed result or a line under **Not verified**, and the receipt's commit equals `HEAD`. If a command or criterion failed, report the failure and write no passing receipt.
 
