@@ -1,12 +1,6 @@
 # Agentic Engineering
 
-[![CI](https://github.com/cavallinilorenzo/agentic-engineering/actions/workflows/ci.yml/badge.svg)](https://github.com/cavallinilorenzo/agentic-engineering/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/agentic-engineering)](https://www.npmjs.com/package/agentic-engineering)
-[![licence: MIT](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
-
 My set of skills and subagents for doing software engineering with coding agents.
-
-They are short words to type in Claude Code. Each word says which phase of the work you are in, the agent does the rest, and no work is declared done without proof.
 
 ```
 Total fog     /fog ───┐
@@ -17,9 +11,6 @@ I want                           /fix       └ runs /verify and /judge
 ```
 
 Not sure what to do now? Type **`/ask`**: it looks at the repo state and tells you the next command.
-
-> [!NOTE]
-> This is the first version. The skills have not yet been tried on real work: the first pilot is planned on a real repo. See [What still needs testing](#what-still-needs-testing).
 
 ## Contents
 
